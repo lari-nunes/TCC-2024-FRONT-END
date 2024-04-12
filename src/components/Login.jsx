@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import MyButton from './MyButton';
 import LogoImage from '../img/logotcc.png';
-import { useNavigation } from '@react-navigation/native'; // Importe o hook useNavigation
+import { useNavigation } from '@react-navigation/native'; 
+/*import { Icon } from 'react-native-vector-icons/Icon';*/
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const navigation = useNavigation(); // Obtenha a navegação usando o hook useNavigation
+  const navigation = useNavigation(); 
 
   const handleLogin = () => {
     if (usuario === '' || senha === '') {
@@ -25,7 +26,7 @@ const Login = () => {
   };
 
   const handleNavRegister = () => {
-    navigation.navigate('Cadastro');
+    navigation.navigate('TipoPessoa');
   };
 
   return (
@@ -36,13 +37,13 @@ const Login = () => {
           <Text style={styles.title}>Seja bem-vindo ao AppSwim</Text>
           <TextInput
             style={styles.input}
-            placeholder="Usuário"
+            placeholder="Digite seu usuário"
             onChangeText={(text) => setUsuario(text)}
             value={usuario}
           />
           <TextInput
             style={styles.input}
-            placeholder="Senha"
+            placeholder="Digite sua senha"
             secureTextEntry
             onChangeText={(text) => setSenha(text)}
             value={senha}
@@ -84,9 +85,11 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 18,
     marginBottom: 15,
-    borderColor: '#fff',
+    borderColor: '#248bf2',
     backgroundColor: '#fff',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+    justifyContent:'center',
+    alignItems: 'center',
   },
   image: {
     width: 250,

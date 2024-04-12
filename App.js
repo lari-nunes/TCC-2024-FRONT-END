@@ -1,31 +1,24 @@
-// App.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './src/components/Login';
-import Cadastro from './src/components/Cadastro';
+import { createStackNavigator } from '@react-navigation/stack';
+import Login from './src/components/Login'; 
+import TipoPessoa from './src/components/TipoPessoa';
+import CadastroCliente from './src/components/Cadastro/CadastroCliente';
+import CadastroUsuario from './src/components/Cadastro/CadastroUsuario';
 
+const Stack = createStackNavigator();
 
-const Stack = createNativeStackNavigator();
-
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator style={styles.container}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Cadastro" component={Cadastro} />
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
+        <Stack.Screen name="TipoPessoa" component={TipoPessoa} options={{ title: 'Escolha o Tipo de Pessoa' }} />
+        <Stack.Screen name="CadastroCliente" component={CadastroCliente} options={{ title: 'Cadastro de Cliente' }} />
+        <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} options={{ title: 'Cadastro de Usuário' }} />
       </Stack.Navigator>
     </NavigationContainer>
-    
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0f223d',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
