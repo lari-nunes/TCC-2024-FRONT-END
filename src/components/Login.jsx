@@ -1,10 +1,8 @@
-// Login.js
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import MyButton from './MyButton';
 import LogoImage from '../img/logotcc.png';
 import { useNavigation } from '@react-navigation/native'; 
-/*import { Icon } from 'react-native-vector-icons/Icon';*/
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
