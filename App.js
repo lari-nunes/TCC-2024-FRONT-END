@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/components/Login'; 
-import TipoPessoa from './src/components/TipoPessoa';
+import TipoPessoa from './src/components/TipoPessoa/TipoPessoa';
 import CadastroCliente from './src/components/Cadastro/CadastroCliente';
 import CadastroUsuario from './src/components/Cadastro/CadastroUsuario';
 

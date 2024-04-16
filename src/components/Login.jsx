@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import MyButton from './MyButton';
-import LogoImage from '../img/logotcc.png';
+import LogoImage from './img/logotcc.png';
 import { useNavigation } from '@react-navigation/native'; 
 
 const Login = () => {
@@ -48,7 +48,9 @@ const Login = () => {
           />
           <MyButton title="Entrar" onPress={handleLogin} />
           <TouchableOpacity onPress={handleNavRegister}>
-            <Text style={styles.textCad}>Cadastra-se</Text>
+            <Text style={styles.textCad}> 
+              Não possui login?{'\n'}
+              Cadastra-se agora</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -68,12 +70,13 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 20,
     fontSize: 18,
+    color: '#008cff'
   },
   title: {
     color: '#fff',
     fontSize: 26,
-    marginBottom: 35,
-    marginTop: 5,
+    marginBottom: 25,
+    marginTop: -15,
     fontWeight: 'bold',
   },
   input: {
@@ -81,19 +84,20 @@ const styles = StyleSheet.create({
     width: 300,
     borderRadius: 10,
     height: 50,
-    fontSize: 18,
+    fontSize: 17,
     marginBottom: 15,
-    borderColor: '#248bf2',
+    borderColor: '#000',
     backgroundColor: '#fff',
     paddingHorizontal: 8,
     justifyContent:'center',
     alignItems: 'center',
+    textAlign: 'center'
   },
   image: {
     width: 250,
     height: 250,
     marginBottom: 30,
-    marginTop: -100,
+    marginTop: -80,
   },
   hp: {
     width: '100%',

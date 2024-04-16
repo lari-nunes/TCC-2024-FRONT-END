@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native';
-
+import { useNavigation } from '@react-navigation/native'; 
+import MyButton from '../MyButton';
 import axios from 'axios';
 
 const CadastroCliente = () => {
+  const navigation = useNavigation(); 
   const [formData, setFormData] = useState({
     nm_pessoa: '',
     email: '',
@@ -14,13 +16,26 @@ const CadastroCliente = () => {
   });
 
   const handleCadastro = async () => {
-    try {
-      console.log(formData)
-      const {response} = await axios.post('http://192.168.0.32:8080/pessoa', formData);
-    } catch (error) {
-      
-      console.log(error)
+    const { nm_pessoa, email, login, senha, telefone1, cpf } = formData;
+    if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
+      Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
+      return;
     }
+    try {
+      console.log(formData);
+      const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
+      if (response.status === 201) {
+        Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
+        handleRegister(); 
+      } 
+    } catch (error) {
+      Alert.alert('Erro', error.message);
+      console.log(error);
+    }
+  };
+
+  const handleRegister = () => {
+    navigation.navigate('Login'); 
   };
 
   return (
@@ -30,41 +45,41 @@ const CadastroCliente = () => {
       <TextInput
         style={styles.input}
         placeholder="Nome Completo"
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, nm_pessoa: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, email: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="CPF"
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, cpf: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="Login"
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, login: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="Senha"
         secureTextEntry
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, senha: text })}
       />
       <TextInput
         style={styles.input}
         placeholder="Telefone"
-        placeholderTextColor="#fff"
+        placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
       />
-      <Button title="Cadastrar" onPress={handleCadastro} />
+      <MyButton title="Cadastrar" onPress={handleCadastro} />
     </View>
   );
 };
@@ -87,7 +102,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#3876d9',
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,

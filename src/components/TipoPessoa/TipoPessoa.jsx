@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import LogoImage from '../img/logotcc.png';
-import ButtonTpPessoa from './ButtonTpPessoa';
+import ButtonTpPessoa from '../TipoPessoa/ButtonTpPessoa';
 
 const TipoPessoa = ({ navigation }) => {
   const handleCadastro = (tipoPessoa) => {
