@@ -2,25 +2,38 @@ import React, { useState } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import MyButton from './MyButton';
 import LogoImage from './img/logotcc.png';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'; 
+import bcrypt from 'bcryptjs';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (usuario === '' || senha === '') {
       Alert.alert('Erro', 'Preencha todos os campos!');
       return;
     }
 
-    const data = {
-      usuario,
-      senha,
-    };
 
-    console.log(data);
+    try {
+      const response = await axios.post('http://192.168.0.32:8080/login', { login:usuario, senha});
+      if (response.status === 200) {
+        Alert.alert('Sucesso', 'Login realizado com sucesso!');
+        handleNavEnter();
+      } else {
+        Alert.alert('Erro', 'Usuário ou senha incorretos.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Ocorreu um erro ao tentar fazer login.');
+      console.error(error);
+    }
+  };
+
+  const handleNavEnter = () => {
+    navigation.navigate('TelaInicial');
   };
 
   const handleNavRegister = () => {
@@ -48,16 +61,13 @@ const Login = () => {
           />
           <MyButton title="Entrar" onPress={handleLogin} />
           <TouchableOpacity onPress={handleNavRegister}>
-            <Text style={styles.textCad}> 
-              Não possui login?{'\n'}
-              Cadastra-se agora</Text>
+            <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',

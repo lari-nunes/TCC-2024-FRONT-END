@@ -80,7 +80,7 @@ const CadastroUsuario = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
       />
-      <MyButton title="Cadastrar" onPress={handleCadastro} />
+      <MyButton title="Cadastrar" onPress={handleRegister} />
     </View>
   );
 };

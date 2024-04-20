@@ -17,21 +17,25 @@ const CadastroCliente = () => {
 
   const handleCadastro = async () => {
     const { nm_pessoa, email, login, senha, telefone1, cpf } = formData;
-    if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
-      Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
-      return;
-    }
-    try {
-      console.log(formData);
-      const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
-      if (response.status === 201) {
-        Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
-        handleRegister(); 
-      } 
-    } catch (error) {
+  if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
+    Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
+    return;
+  }
+
+  try {
+    console.log(formData);
+    const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
+    if (response.status === 201) {
+      Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
+      handleRegister(); 
+    } 
+  } catch (error) {
+   
+      console.log("erro2")
       Alert.alert('Erro', error.message);
-      console.log(error);
-    }
+
+    console.log(error);
+  }
   };
 
   const handleRegister = () => {
