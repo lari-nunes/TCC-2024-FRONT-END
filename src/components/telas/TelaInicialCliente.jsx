@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 
-const TipoPessoa = () => {
+const TelaInicialCliente = () => {
   
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>TELA DE INÍCIO</Text>
+        <Text style={styles.title}>TELA DE INÍCIO CLIENTE</Text>
       </View>
     </View>
   );
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default TipoPessoa;
+export default TelaInicialCliente;

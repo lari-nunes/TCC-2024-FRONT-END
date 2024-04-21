@@ -5,10 +5,12 @@ import LogoImage from './img/logotcc.png';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'; 
 import bcrypt from 'bcryptjs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
+  const [idUser, setIdUser] = useState('')
   const navigation = useNavigation();
 
   const handleLogin = async () => {
@@ -19,8 +21,9 @@ const Login = () => {
 
 
     try {
-      const response = await axios.post('http://192.168.0.32:8080/login', { login:usuario, senha});
+      const response = await axios.post('http://192.168.0.27:8080/login', { login:usuario, senha});
       if (response.status === 200) {
+        setIdUser(response.data.id);
         Alert.alert('Sucesso', 'Login realizado com sucesso!');
         handleNavEnter();
       } else {
@@ -32,8 +35,16 @@ const Login = () => {
     }
   };
 
-  const handleNavEnter = () => {
-    navigation.navigate('TelaInicial');
+  const handleNavEnter = async() => {
+    
+    const {data} = await axios.get('http://192.168.0.27:8080/pessoa/'+ idUser);
+    console.log(data);
+    if(data.tp_pessoa == 'CLIENTE'){
+      navigation.navigate('TelaInicialCliente');
+    } else{
+      navigation.navigate('TelaInicialUsuario');
+    }
+    
   };
 
   const handleNavRegister = () => {
@@ -41,7 +52,7 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.hp}>
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
           <Image source={LogoImage} style={styles.image} />
@@ -65,7 +76,7 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({

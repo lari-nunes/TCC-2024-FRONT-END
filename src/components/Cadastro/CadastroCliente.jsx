@@ -8,34 +8,49 @@ const CadastroCliente = () => {
   const navigation = useNavigation(); 
   const [formData, setFormData] = useState({
     nm_pessoa: '',
-    email: '',
     login: '',
     senha: '',
     telefone1: '',
     cpf: '',
+    tp_pessoa: 'CLIENTE'
+  });
+  const [address, setAddress] = useState({
+    nm_municipio: '',
+    rua: '',
+    bairro:'', 
+    numero: '',
+    id_pessoa: ''
   });
 
   const handleCadastro = async () => {
     const { nm_pessoa, email, login, senha, telefone1, cpf } = formData;
-  if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
-    Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
-    return;
-  }
+    if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
+      Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
+      return;
+    }
 
-  try {
-    console.log(formData);
-    const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
-    if (response.status === 201) {
-      Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
-      handleRegister(); 
-    } 
-  } catch (error) {
-   
-      console.log("erro2")
+    try {
+      
+      const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
+      
+      const enderecoData = {
+        id_pessoa: response.data.id_pessoa,
+        nm_municipio: address.nm_municipio,
+        rua: address.rua,
+        bairro: address.bairro,
+        numero: address.numero
+      };
+    
+      const responseAddress = await axios.post('http://192.168.0.27:8080/endereco', enderecoData);
+
+      if (response.status === 201 && responseAddress.status === 201) {
+        Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
+        handleRegister(); 
+      } 
+    } catch (error) {
+      console.log(error)
       Alert.alert('Erro', error.message);
-
-    console.log(error);
-  }
+    }
   };
 
   const handleRegister = () => {
@@ -82,6 +97,30 @@ const CadastroCliente = () => {
         placeholder="Telefone"
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Cidade"
+        placeholderTextColor="#afb9c9"
+        onChangeText={(text) => setAddress({ ...address, nm_municipio: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Rua"
+        placeholderTextColor="#afb9c9"
+        onChangeText={(text) => setAddress({ ...address, rua: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Bairro"
+        placeholderTextColor="#afb9c9"
+        onChangeText={(text) => setAddress({ ...address, bairro: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Número"
+        placeholderTextColor="#afb9c9"
+        onChangeText={(text) => setAddress({ ...address, numero: text })}
       />
       <MyButton title="Cadastrar" onPress={handleCadastro} />
     </View>

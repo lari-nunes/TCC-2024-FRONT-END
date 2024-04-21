@@ -9,11 +9,11 @@ const CadastroUsuario = () => {
   const navigation = useNavigation(); 
   const [formData, setFormData] = useState({
     nm_pessoa: '',
-    email: '',
     login: '',
     senha: '',
     telefone1: '',
     cpf: '',
+    tp_pessoa: 'USUARIO'
   });
 
   const handleCadastro = async () => {
@@ -80,7 +80,7 @@ const CadastroUsuario = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
       />
-      <MyButton title="Cadastrar" onPress={handleRegister} />
+      <MyButton title="Cadastrar" onPress={handleCadastro} />
     </View>
   );
 };
