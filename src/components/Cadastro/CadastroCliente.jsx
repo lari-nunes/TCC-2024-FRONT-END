@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import MyButton from '../MyButton';
 import axios from 'axios';
+import Url from '../../Url';
 
 const CadastroCliente = () => {
   const navigation = useNavigation(); 
@@ -31,7 +32,7 @@ const CadastroCliente = () => {
 
     try {
       
-      const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
+      const response = await axios.post(`${Url}/pessoa`, formData);
       
       const enderecoData = {
         id_pessoa: response.data.id_pessoa,
@@ -41,7 +42,7 @@ const CadastroCliente = () => {
         numero: address.numero
       };
     
-      const responseAddress = await axios.post('http://192.168.0.27:8080/endereco', enderecoData);
+      const responseAddress = await axios.post(`${Url}/endereco`, enderecoData);
 
       if (response.status === 201 && responseAddress.status === 201) {
         Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);

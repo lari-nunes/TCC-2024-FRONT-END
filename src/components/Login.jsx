@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
 import MyButton from './MyButton';
 import LogoImage from './img/logotcc.png';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'; 
-import bcrypt from 'bcryptjs';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Url from '../Url';
+import useAuthStore from '../SaveId';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const [idUser, setIdUser] = useState('')
+  const { idUser, setIdUser } = useAuthStore();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (idUser !== null) {
+      handleNavEnter();
+    }
+  }, [idUser]);
 
   const handleLogin = async () => {
     if (usuario === '' || senha === '') {
@@ -19,13 +26,12 @@ const Login = () => {
       return;
     }
 
-
     try {
-      const response = await axios.post('http://192.168.0.27:8080/login', { login:usuario, senha});
+      const response = await axios.post(`${Url}/login`, { login: usuario, senha });
+
       if (response.status === 200) {
         setIdUser(response.data.id);
         Alert.alert('Sucesso', 'Login realizado com sucesso!');
-        handleNavEnter();
       } else {
         Alert.alert('Erro', 'Usuário ou senha incorretos.');
       }
@@ -35,16 +41,14 @@ const Login = () => {
     }
   };
 
-  const handleNavEnter = async() => {
+  const handleNavEnter = async () => {
+    const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
     
-    const {data} = await axios.get('http://192.168.0.27:8080/pessoa/'+ idUser);
-    console.log(data);
-    if(data.tp_pessoa == 'CLIENTE'){
+    if (data.tp_pessoa == 'CLIENTE') {
       navigation.navigate('TelaInicialCliente');
-    } else{
+    } else {
       navigation.navigate('TelaInicialUsuario');
     }
-    
   };
 
   const handleNavRegister = () => {

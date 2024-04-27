@@ -14,12 +14,12 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
-        <Stack.Screen name="TipoPessoa" component={TipoPessoa} options={{ title: 'Escolha o Tipo de Pessoa' }} />
-        <Stack.Screen name="CadastroCliente" component={CadastroCliente} options={{ title: 'Cadastro de Cliente' }} />
-        <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} options={{ title: 'Cadastro de Usuário' }} />
-        <Stack.Screen name="TelaInicialCliente" component={TelaInicialCliente} options={{ title: 'Tela Inicial Cliente' }} />
-        <Stack.Screen name="TelaInicialUsuario" component={TelaInicialUsuario} options={{ title: 'Tela Inicial Usuário' }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="TipoPessoa" component={TipoPessoa} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="CadastroCliente" component={CadastroCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="TelaInicialCliente" component={TelaInicialCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="TelaInicialUsuario" component={TelaInicialUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

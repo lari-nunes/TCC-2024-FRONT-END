@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
-
 import axios from 'axios';
 import MyButton from '../MyButton';
+import Url from '../../Url';
 
 const CadastroUsuario = () => {
   const navigation = useNavigation(); 
@@ -24,7 +24,7 @@ const CadastroUsuario = () => {
     }
     try {
       console.log(formData);
-      const response = await axios.post('http://192.168.0.27:8080/pessoa', formData);
+      const response = await axios.post(`${Url}/pessoa`, formData);
       if (response.status === 201) {
         Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
         handleRegister(); 
