@@ -33,7 +33,7 @@ const CadastroCliente = () => {
     try {
       
       const response = await axios.post(`${Url}/pessoa`, formData);
-      
+      console.log("ok")
       const enderecoData = {
         id_pessoa: response.data.id_pessoa,
         nm_municipio: address.nm_municipio,
@@ -41,15 +41,13 @@ const CadastroCliente = () => {
         bairro: address.bairro,
         numero: address.numero
       };
-    
+      
       const responseAddress = await axios.post(`${Url}/endereco`, enderecoData);
-
-      if (response.status === 201 && responseAddress.status === 201) {
+      if (responseAddress.status === 201) {
         Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
         handleRegister(); 
       } 
     } catch (error) {
-      console.log(error)
       Alert.alert('Erro', error.message);
     }
   };
