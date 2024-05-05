@@ -7,6 +7,7 @@ import CadastroCliente from './src/components/Cadastro/CadastroCliente';
 import CadastroUsuario from './src/components/Cadastro/CadastroUsuario';
 import TelaInicialCliente from './src/components/telas/TelaInicialCliente'
 import TelaInicialUsuario from './src/components/telas/TelaInicialUsuario';
+import AgendamentoLimpeza from './src/components/telas/AgendamentoLimpeza';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ const App = () => {
         <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="TelaInicialCliente" component={TelaInicialCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="TelaInicialUsuario" component={TelaInicialUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        <Stack.Screen name="AgendamentoLimpeza" component={AgendamentoLimpeza} options={{ headerShown: false, headerTransparent: true, title: null }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

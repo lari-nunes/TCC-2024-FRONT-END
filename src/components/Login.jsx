@@ -36,8 +36,11 @@ const Login = () => {
         Alert.alert('Erro', 'Usuário ou senha incorretos.');
       }
     } catch (error) {
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar fazer login.');
-      console.error(error);
+      if(error.response.status === 404){
+        Alert.alert('Erro', 'Login ou senha incorretos!');
+      }else{
+        Alert.alert('Erro', 'Ocorreu um erro ao tentar fazer login!');
+      }
     }
   };
 
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    fontSize: 26,
+    fontSize: 22,
     marginBottom: 25,
     marginTop: -15,
     fontWeight: 'bold',

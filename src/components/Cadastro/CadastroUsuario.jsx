@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import axios from 'axios';
 import MyButton from '../MyButton';
 import Url from '../../Url';
+import { MaskedTextInput } from "react-native-mask-text";
 
 const CadastroUsuario = () => {
   const navigation = useNavigation(); 
@@ -13,11 +14,12 @@ const CadastroUsuario = () => {
     senha: '',
     telefone1: '',
     cpf: '',
+    descricao: '',
     tp_pessoa: 'USUARIO'
   });
 
   const handleCadastro = async () => {
-    const { nm_pessoa, email, login, senha, telefone1, cpf } = formData;
+    const { nm_pessoa, email, login, senha, telefone1, cpf, descricao} = formData;
     if (!nm_pessoa || !email || !login || !senha || !telefone1 || !cpf) {
       Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
       return;
@@ -49,13 +51,22 @@ const CadastroUsuario = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, nm_pessoa: text })}
       />
+      <MaskedTextInput
+        mask="(99) 99999-9999"
+        value={formData.telefone1}
+        style={styles.input}
+        placeholder="Telefone"
+        placeholderTextColor="#afb9c9"
+        onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, email: text })}
       />
-      <TextInput
+      <MaskedTextInput
+        mask="999.999.999-99"
         style={styles.input}
         placeholder="CPF"
         placeholderTextColor="#afb9c9"
@@ -76,9 +87,10 @@ const CadastroUsuario = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Telefone"
+        placeholder="Descrição"
         placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
+        maxLength={200}
+        onChangeText={(text) => setFormData({ ...formData, descricao: text })}
       />
       <MyButton title="Cadastrar" onPress={handleCadastro} />
     </View>

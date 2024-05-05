@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import MyButton from '../MyButton';
 import axios from 'axios';
 import Url from '../../Url';
+import { MaskedTextInput } from "react-native-mask-text";
+
 
 const CadastroCliente = () => {
   const navigation = useNavigation(); 
@@ -31,9 +33,9 @@ const CadastroCliente = () => {
     }
 
     try {
-      
+      console.log(formData)
       const response = await axios.post(`${Url}/pessoa`, formData);
-      console.log("ok")
+      
       const enderecoData = {
         id_pessoa: response.data.id_pessoa,
         nm_municipio: address.nm_municipio,
@@ -48,7 +50,7 @@ const CadastroCliente = () => {
         handleRegister(); 
       } 
     } catch (error) {
-      Alert.alert('Erro', error.message);
+      Alert.alert('Erro',  error.response.data.message);
     }
   };
 
@@ -72,7 +74,8 @@ const CadastroCliente = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, email: text })}
       />
-      <TextInput
+      <MaskedTextInput
+        mask="999.999.999-99"
         style={styles.input}
         placeholder="CPF"
         placeholderTextColor="#afb9c9"
@@ -91,7 +94,9 @@ const CadastroCliente = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, senha: text })}
       />
-      <TextInput
+      <MaskedTextInput
+        mask="(99) 99999-9999"
+        value={formData.telefone1}
         style={styles.input}
         placeholder="Telefone"
         placeholderTextColor="#afb9c9"

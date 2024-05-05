@@ -4,6 +4,8 @@ import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaskedText } from "react-native-mask-text";
+import { useNavigation } from '@react-navigation/native'; 
 
 const TelaInicialCliente = () => {
   const { idUser } = useAuthStore();
@@ -11,11 +13,11 @@ const TelaInicialCliente = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [limpadores, setLimpadores] = useState('');
   const [loading, setLoading] = useState('');
+  const navigation = useNavigation(); 
 
   const fetchLimpadores = async () => {
     try{
       const {data} = await axios.get(`${Url}/pessoa/limpadores`);
-     
       setLimpadores(data)
     }catch(error){
       Alert.alert(error.message);
@@ -43,16 +45,21 @@ const TelaInicialCliente = () => {
   }, []);
 
   const CharacterItem = ({ data }) => {
-    const imageUrl = data.image || "";
     return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={ () => navigation.navigate('AgendamentoLimpeza', { idLimpador: data.id_pessoa })}>
       <View style={styles.characterContainer}>
        <View>
           <Text style={styles.text}>
             {data.nm_pessoa}
           </Text>
+          <MaskedText 
+            style={styles.text}
+            mask="(99) 99999-9999"
+          >
+            {data.telefone1}
+          </MaskedText>
+          <Text>{data.descricao} </Text>
        </View>
-       
       </View>
     </TouchableOpacity>  
     )
@@ -61,6 +68,7 @@ const TelaInicialCliente = () => {
   const handleName = async () => {
 
     try {
+      console.log(idUser)
       const {data} = await axios.get(`${Url}/pessoa/${idUser}`);
       setNmPessoa(data.nm_pessoa);
     } catch (error) {
@@ -73,7 +81,7 @@ const TelaInicialCliente = () => {
     <>
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.titleContent}>{currentTime}, {nmPessoa} !</Text>
+        <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
       </View>
     </View>
     <SafeAreaView style={styles.block}>
@@ -89,18 +97,19 @@ const TelaInicialCliente = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#05719c',
+    backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50
+    height: 60,
+
   },
   characterContainer:{
     padding: 24,
-    backgroundColor: "#fff",
+    backgroundColor: "#2f3e75",
     margin: 16,
     borderRadius: 15,
     width: 350,
-    height:100,
+    height:160,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -114,7 +123,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    padding: 25,
+    padding: 30,
   },
   titleContent: {
     color: '#fff',
@@ -130,10 +139,9 @@ const styles = StyleSheet.create({
   },
   block: {
     flex: 1,
-    backgroundColor: '#05719c',
+    backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
-   
   }
 });
 
