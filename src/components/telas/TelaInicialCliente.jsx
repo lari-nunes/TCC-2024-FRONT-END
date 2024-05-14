@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
@@ -79,12 +79,30 @@ const TelaInicialCliente = () => {
 
   return (
     <>
+    
+    <SafeAreaView style={styles.block}>
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+      <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+      <TextInput
+              numberOfLines={1}
+              editable={false}
+              placeholder="Choose Your Date of Birth"
+              value={new Date().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+              })}
+              style={{
+                fontSize: 16,
+                paddingRight: 100,
+                color: 'white',
+                
+              }}
+          />
+       
       </View>
     </View>
-    <SafeAreaView style={styles.block}>
         <FlatList
           data={limpadores}
           renderItem={({ item }) => <CharacterItem data={item} />}
@@ -100,16 +118,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 60,
+    height: 100,
 
   },
   characterContainer:{
     padding: 24,
-    backgroundColor: "#2f3e75",
+    backgroundColor: "#34b4eb",
     margin: 16,
     borderRadius: 15,
-    width: 350,
-    height:160,
+    width: 320,
+    height:120,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -119,15 +137,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontWeight: "bold",
   },
-  content: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: 30,
-  },
+  
   titleContent: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
   },
   title: {
     fontSize: 20,

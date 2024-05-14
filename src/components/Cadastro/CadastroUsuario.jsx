@@ -17,6 +17,10 @@ const CadastroUsuario = () => {
     descricao: '',
     tp_pessoa: 'USUARIO'
   });
+  const [address, setAddress] = useState({
+    nm_municipio: '',
+    id_pessoa: ''
+  });
 
   const handleCadastro = async () => {
     const { nm_pessoa, email, login, senha, telefone1, cpf, descricao} = formData;
@@ -27,7 +31,14 @@ const CadastroUsuario = () => {
     try {
       console.log(formData);
       const response = await axios.post(`${Url}/pessoa`, formData);
-      if (response.status === 201) {
+
+      const enderecoData = {
+        id_pessoa: response.data.id_pessoa,
+        nm_municipio: address.nm_municipio,
+      };
+
+      const responseAddress = await axios.post(`${Url}/endereco`, enderecoData);
+      if (responseAddress.status === 201) {
         Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
         handleRegister(); 
       } 
@@ -56,6 +67,7 @@ const CadastroUsuario = () => {
         value={formData.telefone1}
         style={styles.input}
         placeholder="Telefone"
+        keyboardType='numeric'
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
       />
@@ -69,6 +81,7 @@ const CadastroUsuario = () => {
         mask="999.999.999-99"
         style={styles.input}
         placeholder="CPF"
+        keyboardType='numeric'
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, cpf: text })}
       />
@@ -85,6 +98,12 @@ const CadastroUsuario = () => {
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, senha: text })}
       />
+       <TextInput
+          style={styles.input}
+          placeholder="Cidade"
+          placeholderTextColor="#afb9c9"
+          onChangeText={(text) => setAddress({ ...address, nm_municipio: text })}
+        />
       <TextInput
         style={styles.input}
         placeholder="Descrição"
@@ -106,7 +125,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#fff'

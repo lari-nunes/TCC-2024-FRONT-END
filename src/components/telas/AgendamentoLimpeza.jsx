@@ -5,33 +5,82 @@ import axios from 'axios';
 import { MaskedText } from "react-native-mask-text";
 import Url from '../../Url';
 import { useRoute } from "@react-navigation/native";
+import { MaskedTextInput } from "react-native-mask-text";
+import MyButton from '../MyButton';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AgendamentoLimpeza = ({navigation}) => {
   const { idUser } = useAuthStore();
   const [limpador, setLimpador] = useState('');
-  const [agendamentoLimp, setAgendamento] = useState('');
   const route = useRoute();
   const {idLimpador} = route.params;
+  const [dateTime, setDateTime] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dateTime;
+    setDateTime(currentDate);
+    setShowPicker(false);
+    setAgenda({ ...agenda, dt_agendamento });
+  };
+
+  const [agenda, setAgenda] = useState({
+    dt_agendamento: '',
+    observacao: '',
+    id_pessoa: ''
+  });
+
+  useEffect(() => {
+    fetchLimpador();
+  },[]) ;
+
+  const fetchLimpador = async() => {
+    try {
+
+      const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
+      setLimpador(data);
+  
+    }catch (error) {
+      Alert.alert('Erro',  error.response.data.message);
+    }
+  };
 
   const agendamento = async () => {
     try {
-      const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
+
+      const response = await axios.get(`${Url}/pessoa/${idLimpador}`);
       
-      setLimpador(data);
-    } catch (error) {
-      Alert.alert(error.message);
+
+      const agendaData = {
+        id_pessoa: response.data.id_pessoa,
+        observacao: agenda.observacao,
+        dt_agendamento: agenda.dt_agendamento,
+      };
+
+     
+      const responseAgenda= await axios.post(`${Url}/agenda`, agendaData);
+      if (responseAgenda.status === 201) {
+        Alert.alert('Sucesso! Seu cadastro foi realizado com sucesso!');
+        handleRegister(); 
+      } 
+      setLimpador(response)
+    } catch (error) { 
+      Alert.alert('Erro',  error.response.data.message);
     }
   };
-  useEffect(() => {
-    agendamento()
+  
 
-  }, []);
+  const handleRegister = () => {
+    navigation.navigate('TelaInicialCliente'); 
+  };
+
+   
   
 
   return (
     <>
     <SafeAreaView style={styles.block}>
-    <TouchableOpacity >
+    <View>
       <View style={styles.characterContainer}>
        <View>
           <Text style={styles.textDetalhes}>
@@ -43,35 +92,57 @@ const AgendamentoLimpeza = ({navigation}) => {
           <MaskedText 
             style={styles.text}
             mask="(99) 99999-9999"
+            keyboardType='numeric'
           >
             {limpador.telefone1}
           </MaskedText>
-          <Text>{limpador.descricao} </Text>
+          <Text style={styles.text}>{limpador.descricao} </Text>
        </View>
       </View>
       <View >
         <Text style={styles.textCad}>Cadastrar Agendamento de Limpeza</Text>
       </View>
-      <View>
+      <View  style={styles.container}> 
         <TextInput
           style={styles.input}
-          placeholder="Nome Completo"
+          placeholder="Observação"
           placeholderTextColor="#afb9c9"
-          onChangeText={(text) => setFormData({ ...formData, nm_pessoa: text })}
+          onChangeText={(text) => setAgenda({ ...agenda, observacao: text })}
         />
-        <TextInput
-            numberOfLines={1}
-            editable={false}
-            placeholder="Choose Your Date of Birth"
-            value={format('DD MMMM, YYYY')}
-            style={{
-              fontSize: 16,
-              paddingVertical: 10,
-              color: 'black',
-            }}
-          />
+         <TextInput
+          style={styles.input}
+          placeholder="Agenda"
+          placeholderTextColor="#afb9c9"
+          onChangeText={(text) => setAgenda({ ...agenda, dt_agendamento: text })}
+        />
+        <MaskedTextInput
+          type="date"
+          options={{
+            dateFormat: 'DD/MM/YYYY',
+          }}
+          style={styles.input}
+          keyboardType="numeric"
+          onChangeText={(text) => setAgenda({ ...agenda, dt_agendamento: text })}
+        />
+      {/*
+         <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.button}>
+         <Text style={styles.buttonText}>Selecionar Data e Hora</Text>
+       </TouchableOpacity>
+         {showPicker && (
+           <DateTimePicker
+             value={dateTime}
+             mode="datetime"
+             is24Hour={true}
+             display="default"
+             onChange={handleDateChange}
+           />
+         )}
+        */}
+     
       </View>
-    </TouchableOpacity>  
+        <MyButton title="Cadastrar" />
+     
+    </  View>  
     </SafeAreaView>
     </>
   );
@@ -80,10 +151,11 @@ const AgendamentoLimpeza = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f223d',
-    alignItems: 'center',
     justifyContent: 'center',
-
+    alignItems: 'center',
+    backgroundColor: '#0f223d',
+    padding:10,
+    marginBottom: 260
   },
   content: {
     alignItems: 'center',
@@ -103,8 +175,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignItems: 'center',
     justifyContent: 'center',
+    color: 'white',
     marginBottom: 15,
     textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  text:{
+    color: 'white',
   },
   textCad: {
     fontSize: 18,
@@ -112,15 +198,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 15,
+    color: '#fff',
     textAlign: 'center',
   },
   characterContainer:{
     padding: 24,
     backgroundColor: "#2f3e75",
-    margin: 16,
-    borderRadius: 15,
+    margin: 20,
+    borderRadius: 10,
     width: 350,
-    height:160,
+    height:180,
     flexDirection: "row",
     alignItems: "center",
   },

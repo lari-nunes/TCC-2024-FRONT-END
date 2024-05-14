@@ -7,12 +7,14 @@ import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Url from '../Url';
 import useAuthStore from '../SaveId';
+import { Feather } from '@expo/vector-icons';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
   const { idUser, setIdUser } = useAuthStore();
   const navigation = useNavigation();
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (idUser !== null) {
@@ -77,6 +79,11 @@ const Login = () => {
             onChangeText={(text) => setSenha(text)}
             value={senha}
           />
+          <TouchableOpacity
+              style={styles.togglepassword}
+              onPress={() => setShowPassword(!showPassword)}>
+              <Feather name={showPassword ? 'eye' : 'eye-off'} size={18} color="#005C58" />
+          </TouchableOpacity>
           <MyButton title="Entrar" onPress={handleLogin} />
           <TouchableOpacity onPress={handleNavRegister}>
             <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
@@ -106,6 +113,11 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     marginTop: -15,
     fontWeight: 'bold',
+  },
+  togglepassword: {
+    left: '90%',
+    bottom:10,
+    position:'absolute',
   },
   input: {
     borderWidth: 1.5,

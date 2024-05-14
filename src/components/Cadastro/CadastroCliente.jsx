@@ -35,6 +35,7 @@ const CadastroCliente = () => {
     try {
       console.log(formData)
       const response = await axios.post(`${Url}/pessoa`, formData);
+
       
       const enderecoData = {
         id_pessoa: response.data.id_pessoa,
@@ -78,6 +79,7 @@ const CadastroCliente = () => {
         mask="999.999.999-99"
         style={styles.input}
         placeholder="CPF"
+        keyboardType='numeric'
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, cpf: text })}
       />
@@ -99,6 +101,7 @@ const CadastroCliente = () => {
         value={formData.telefone1}
         style={styles.input}
         placeholder="Telefone"
+        keyboardType='numeric'
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
       />
@@ -123,6 +126,7 @@ const CadastroCliente = () => {
       <TextInput
         style={styles.input}
         placeholder="Número"
+        keyboardType='numeric'
         placeholderTextColor="#afb9c9"
         onChangeText={(text) => setAddress({ ...address, numero: text })}
       />

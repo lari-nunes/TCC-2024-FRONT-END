@@ -15,11 +15,12 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="TelaInicialCliente" component={TelaInicialCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="TipoPessoa" component={TipoPessoa} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="CadastroCliente" component={CadastroCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="CadastroUsuario" component={CadastroUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
-        <Stack.Screen name="TelaInicialCliente" component={TelaInicialCliente} options={{ headerShown: false, headerTransparent: true, title: null }} />
+        
         <Stack.Screen name="TelaInicialUsuario" component={TelaInicialUsuario} options={{ headerShown: false, headerTransparent: true, title: null }} />
         <Stack.Screen name="AgendamentoLimpeza" component={AgendamentoLimpeza} options={{ headerShown: false, headerTransparent: true, title: null }} />
       </Stack.Navigator>
