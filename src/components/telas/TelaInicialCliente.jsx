@@ -6,6 +6,7 @@ import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaskedText } from "react-native-mask-text";
 import { useNavigation } from '@react-navigation/native'; 
+import ButtonAgendamentos from './ButtonAgendamentos';
 
 const TelaInicialCliente = () => {
   const { idUser } = useAuthStore();
@@ -77,6 +78,11 @@ const TelaInicialCliente = () => {
     }
   };
 
+  const handleAgendamentos = () => {
+    navigation.navigate('MeusAgendamentos');
+    
+  };
+
   return (
     <>
     
@@ -100,8 +106,12 @@ const TelaInicialCliente = () => {
                 
               }}
           />
-       
       </View>
+    </View>
+    <View style={styles.separator} />
+
+    <View>
+    <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos}/>
     </View>
         <FlatList
           data={limpadores}
@@ -155,6 +165,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: '#ddd',
+    marginVertical: 10,
   }
 });
 

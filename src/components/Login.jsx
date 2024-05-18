@@ -38,9 +38,9 @@ const Login = () => {
         Alert.alert('Erro', 'Usuário ou senha incorretos.');
       }
     } catch (error) {
-      if(error.response.status === 404){
+      if (error.response.status === 404) {
         Alert.alert('Erro', 'Login ou senha incorretos!');
-      }else{
+      } else {
         Alert.alert('Erro', 'Ocorreu um erro ao tentar fazer login!');
       }
     }
@@ -48,7 +48,7 @@ const Login = () => {
 
   const handleNavEnter = async () => {
     const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
-    
+    console.log(data);
     if (data.tp_pessoa == 'CLIENTE') {
       navigation.navigate('TelaInicialCliente');
     } else {
@@ -72,18 +72,21 @@ const Login = () => {
             onChangeText={(text) => setUsuario(text)}
             value={usuario}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha"
-            secureTextEntry
-            onChangeText={(text) => setSenha(text)}
-            value={senha}
-          />
-          <TouchableOpacity
-              style={styles.togglepassword}
-              onPress={() => setShowPassword(!showPassword)}>
-              <Feather name={showPassword ? 'eye' : 'eye-off'} size={18} color="#005C58" />
-          </TouchableOpacity>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Digite sua senha"
+              secureTextEntry={!showPassword}
+              onChangeText={(text) => setSenha(text)}
+              value={senha}
+            />
+            <TouchableOpacity
+              style={styles.togglePassword}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
+            </TouchableOpacity>
+          </View>
           <MyButton title="Entrar" onPress={handleLogin} />
           <TouchableOpacity onPress={handleNavRegister}>
             <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
@@ -93,6 +96,7 @@ const Login = () => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -102,7 +106,6 @@ const styles = StyleSheet.create({
   },
   textCad: {
     justifyContent: 'center',
-    color: 'white',
     marginTop: 20,
     fontSize: 18,
     color: '#008cff'
@@ -114,10 +117,20 @@ const styles = StyleSheet.create({
     marginTop: -15,
     fontWeight: 'bold',
   },
-  togglepassword: {
-    left: '90%',
-    bottom:10,
-    position:'absolute',
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    width: 300,
+    borderRadius: 10,
+    height: 50,
+    marginBottom: 15,
+    borderColor: '#000',
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
+  },
+  togglePassword: {
+    marginLeft: -30,
   },
   input: {
     borderWidth: 1.5,
@@ -129,9 +142,12 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     backgroundColor: '#fff',
     paddingHorizontal: 8,
-    justifyContent:'center',
-    alignItems: 'center',
-    textAlign: 'center'
+  
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 17,
+    paddingHorizontal: 8,
   },
   image: {
     width: 250,
