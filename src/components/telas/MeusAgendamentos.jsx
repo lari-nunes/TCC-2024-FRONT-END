@@ -4,7 +4,8 @@ import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { format } from 'date-fns';
+import { TextInput } from 'react-native-gesture-handler';
 const MeusAgendamentos = () => {
     const [agendamentos, setAgendamentos] = useState('');
     const { idUser } = useAuthStore();
@@ -30,9 +31,14 @@ const MeusAgendamentos = () => {
             <TouchableOpacity>
             <View style={styles.characterContainer}>
              <View>
-                <Text style={styles.text}>
-                  {data.dt_agendamento}
-                </Text>
+                <TextInput
+                  style={styles.text}
+                  placeholder="Data de Agendamento"
+                  placeholderTextColor="#afb9c9"
+                  value={format(data.dt_agendamento, 'dd/MM/yyyy HH:mm')}
+                  editable={false}
+                />
+                
                 <Text style={styles.text}>
                   {data.descricao}
                 </Text>
@@ -55,7 +61,7 @@ const MeusAgendamentos = () => {
   return (
    <SafeAreaView style={styles.container}>
     <View>
-        <Text>Meus Agendamentos</Text>
+        <Text style={styles.textAgend}>Meus Agendamentos</Text>
     </View>
         <FlatList
           data={agendamentos}
@@ -78,6 +84,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
+  textAgend:{
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold"
+  },
   text:{
     color: "#000",
     fontSize: 16,
@@ -90,7 +101,7 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 15,
     width: 320,
-    height:120,
+    height:150,
     flexDirection: "row",
     alignItems: "center",
   },

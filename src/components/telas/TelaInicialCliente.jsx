@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaskedText } from "react-native-mask-text";
 import { useNavigation } from '@react-navigation/native'; 
 import ButtonAgendamentos from './ButtonAgendamentos';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 const TelaInicialCliente = () => {
   const { idUser } = useAuthStore();
@@ -15,6 +16,8 @@ const TelaInicialCliente = () => {
   const [limpadores, setLimpadores] = useState('');
   const [loading, setLoading] = useState('');
   const navigation = useNavigation(); 
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
 
   const fetchLimpadores = async () => {
     try{
@@ -59,7 +62,7 @@ const TelaInicialCliente = () => {
           >
             {data.telefone1}
           </MaskedText>
-          <Text>{data.descricao} </Text>
+          <Text style={styles.text}>{data.descricao} </Text>
        </View>
       </View>
     </TouchableOpacity>  
@@ -137,7 +140,7 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 15,
     width: 320,
-    height:120,
+    height:150,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -145,7 +148,6 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 16,
     marginLeft: 10,
-    fontWeight: "bold",
   },
   
   titleContent: {

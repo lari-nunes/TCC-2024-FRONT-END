@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Alert, TextInput} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Alert, TextInput, Button, Platform } from 'react-native';
 import useAuthStore from '../../SaveId';
 import axios from 'axios';
 import { MaskedText } from "react-native-mask-text";
@@ -7,7 +7,9 @@ import Url from '../../Url';
 import { useRoute } from "@react-navigation/native";
 import { MaskedTextInput } from "react-native-mask-text";
 import MyButton from '../MyButton';
-//import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
+import ButtonAgendamentos from './ButtonAgendamentos';
 
 const AgendamentoLimpeza = ({navigation}) => {
   const { idUser } = useAuthStore();
@@ -15,13 +17,27 @@ const AgendamentoLimpeza = ({navigation}) => {
   const route = useRoute();
   const {idLimpador} = route.params;
   const [dateTime, setDateTime] = useState(new Date());
+  const [mode, setMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
   
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
+    setShowPicker(Platform.OS === 'ios');
     setDateTime(currentDate);
-    setShowPicker(false);
-    setAgenda({ ...agenda, dt_agendamento });
+    setAgenda({ ...agenda, dt_agendamento: currentDate.toISOString() });
+  };
+
+  const showMode = (currentMode) => {
+    setShowPicker(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
   };
 
   const [agenda, setAgenda] = useState({
@@ -36,10 +52,8 @@ const AgendamentoLimpeza = ({navigation}) => {
 
   const fetchLimpador = async() => {
     try {
-
       const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
       setLimpador(data);
-  
     }catch (error) {
       Alert.alert('Erro',  error.response.data.message);
     }
@@ -47,17 +61,13 @@ const AgendamentoLimpeza = ({navigation}) => {
 
   const agendamento = async () => {
     try {
-
       const response = await axios.get(`${Url}/pessoa/${idLimpador}`);
-      
-
       const agendaData = {
-        id_pessoa: response.data.id_pessoa,
+        id_pessoa: idUser,
         observacao: agenda.observacao,
         dt_agendamento: agenda.dt_agendamento,
       };
-
-     
+      console.log(agendaData);
       const responseAgenda= await axios.post(`${Url}/agenda`, agendaData);
       if (responseAgenda.status === 201) {
         Alert.alert('Sucesso! Seu cadastro foi realizado com sucesso!');
@@ -69,13 +79,9 @@ const AgendamentoLimpeza = ({navigation}) => {
     }
   };
   
-
   const handleRegister = () => {
     navigation.navigate('TelaInicialCliente'); 
   };
-
-   
-  
 
   return (
     <>
@@ -109,39 +115,28 @@ const AgendamentoLimpeza = ({navigation}) => {
           placeholderTextColor="#afb9c9"
           onChangeText={(text) => setAgenda({ ...agenda, observacao: text })}
         />
-         <TextInput
+
+        <ButtonAgendamentos onPress={showDatepicker} title="Selecionar Data" />
+        <ButtonAgendamentos onPress={showTimepicker} title="Selecionar Hora" />
+        {showPicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={dateTime}
+            mode={mode}
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+        <TextInput
           style={styles.input}
-          placeholder="Agenda"
+          placeholder="Data de Agendamento"
           placeholderTextColor="#afb9c9"
-          onChangeText={(text) => setAgenda({ ...agenda, dt_agendamento: text })}
+          value={format(dateTime, 'dd/MM/yyyy HH:mm')}
+          editable={false}
         />
-        <MaskedTextInput
-          type="date"
-          options={{
-            dateFormat: 'DD/MM/YYYY',
-          }}
-          style={styles.input}
-          keyboardType="numeric"
-          onChangeText={(text) => setAgenda({ ...agenda, dt_agendamento: text })}
-        />
-      {/*
-         <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.button}>
-         <Text style={styles.buttonText}>Selecionar Data e Hora</Text>
-       </TouchableOpacity>
-         {showPicker && (
-           <DateTimePicker
-             value={dateTime}
-             mode="datetime"
-             is24Hour={true}
-             display="default"
-             onChange={handleDateChange}
-           />
-         )}
-        */}
-     
       </View>
-        <MyButton title="Cadastrar" />
-     
+        <MyButton title="Cadastrar" onPress={agendamento} />
     </  View>  
     </SafeAreaView>
     </>
