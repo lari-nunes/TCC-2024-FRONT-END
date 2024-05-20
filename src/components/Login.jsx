@@ -84,7 +84,7 @@ const Login = () => {
               style={styles.togglePassword}
               onPress={() => setShowPassword(!showPassword)}
             >
-              <Feather name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
+              <Feather name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
             </TouchableOpacity>
           </View>
           <MyButton title="Entrar" onPress={handleLogin} />
