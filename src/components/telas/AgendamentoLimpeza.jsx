@@ -41,15 +41,17 @@ const AgendamentoLimpeza = ({navigation}) => {
   };
 
   const [agenda, setAgenda] = useState({
-    dt_agendamento: '',
+    dtAgendamento: '',
     observacao: '',
-    id_pessoa: ''
+    id_pessoa: '',
+    id_limpador: ''
   });
 
   useEffect(() => {
     fetchLimpador();
   },[]) ;
 
+  /*
   const fetchLimpador = async() => {
     try {
       const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
@@ -57,7 +59,7 @@ const AgendamentoLimpeza = ({navigation}) => {
     }catch (error) {
       Alert.alert('Erro',  error.response.data.message);
     }
-  };
+  };*/
 
   const agendamento = async () => {
     try {
@@ -65,7 +67,7 @@ const AgendamentoLimpeza = ({navigation}) => {
       const agendaData = {
         id_pessoa: idUser,
         observacao: agenda.observacao,
-        dt_agendamento: agenda.dt_agendamento,
+        dtAgendamento: agenda.dtAgendamento,
       };
       console.log(agendaData);
       const responseAgenda= await axios.post(`${Url}/agenda`, agendaData);
