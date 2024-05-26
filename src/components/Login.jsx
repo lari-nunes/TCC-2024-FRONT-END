@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Url from '../Url';
 import useAuthStore from '../SaveId';
 import { Feather } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
@@ -33,9 +34,6 @@ const Login = () => {
 
       if (response.status === 200) {
         setIdUser(response.data.id);
-        Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      } else {
-        Alert.alert('Erro', 'Usuário ou senha incorretos.');
       }
     } catch (error) {
       if (error.response.status === 404) {
@@ -50,7 +48,8 @@ const Login = () => {
     const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
     console.log(data);
     if (data.tp_pessoa == 'CLIENTE') {
-      navigation.navigate('TelaInicialCliente');
+      //navigation.navigate('TelaInicialCliente');
+      navigation.navigate('TelaInicialUsuario');
     } else {
       navigation.navigate('TelaInicialUsuario');
     }
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderColor: '#000',
     backgroundColor: '#fff',
-    paddingHorizontal: 8,
+    paddingHorizontal: 5,
   },
   togglePassword: {
     marginLeft: -30,

@@ -50,24 +50,26 @@ const TelaInicialCliente = () => {
 
   const CharacterItem = ({ data }) => {
     return (
-    <TouchableOpacity onPress={ () => navigation.navigate('AgendamentoLimpeza', { idLimpador: data.id_pessoa })}>
-      <View style={styles.characterContainer}>
-       <View>
-          <Text style={styles.text}>
-            {data.nm_pessoa}
-          </Text>
-          <MaskedText 
-            style={styles.text}
-            mask="(99) 99999-9999"
-          >
-            {data.telefone1}
-          </MaskedText>
-          <Text style={styles.text}>{data.descricao} </Text>
-       </View>
-      </View>
-    </TouchableOpacity>  
-    )
-  }  
+      <TouchableOpacity onPress={() => navigation.navigate('AgendamentoLimpeza', { idLimpador: data.id_pessoa })}>
+        <View style={styles.characterContainer}>
+          <View style={styles.textInfo}>
+            <Text style={styles.textLabel}>Piscineiro(a):</Text>
+            <Text style={styles.textLabel}>Telefone:</Text>
+          </View>
+          <View style={styles.textDetails}>
+            <Text style={styles.text}>{data.nm_pessoa}</Text>
+            <MaskedText 
+              style={styles.text}
+              mask="(99) 99999-9999"
+            >
+              {data.telefone1}
+            </MaskedText>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  
 
   const handleName = async () => {
 
@@ -116,6 +118,9 @@ const TelaInicialCliente = () => {
     <View>
     <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos}/>
     </View>
+      <View style={styles.textContainer}>
+        <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
+      </View>
         <FlatList
           data={limpadores}
           renderItem={({ item }) => <CharacterItem data={item} />}
@@ -132,35 +137,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 100,
-
   },
-  characterContainer:{
+  characterContainer: {
     padding: 24,
-    backgroundColor: "#34b4eb",
+    backgroundColor: "#36D6EE",
     margin: 16,
-    borderRadius: 15,
+    borderRadius: 8,
     width: 320,
-    height:150,
     flexDirection: "row",
     alignItems: "center",
   },
-  text:{
-    color: "#000",
-    fontSize: 16,
-    marginLeft: 10,
+  textInfo: {
+    flex: 1,
   },
-  
+  textLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  textDetails: {
+    flex: 1.2,
+    marginLeft: 10,
+    marginBottom: -1
+  },
+  text: {
+    color: "#000",
+    fontSize: 14,
+  },
+  description: {
+    color: "#000",
+    fontSize: 14,
+    flexShrink: 1,  // Adiciona flexShrink para permitir que o texto se ajuste ao contêiner
+  },
+  textContainer: {
+    width: '100%', // Garanta que o contêiner ocupe a largura total
+    paddingHorizontal: 16, // Ajuste o padding conforme necessário
+  },
+  textDisp: {
+    color: "#fff",
+    fontSize: 18,
+    margin: 12,
+    marginLeft: 0,
+    alignSelf: 'flex-start', // Adicione esta linha
+  },
   titleContent: {
     color: '#fff',
     fontSize: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    margin: 7,
-    padding: 8,
-    fontSize: 22,
   },
   block: {
     flex: 1,
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ddd',
     marginVertical: 10,
-  }
+  },
 });
 
 export default TelaInicialCliente;

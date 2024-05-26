@@ -6,6 +6,8 @@ import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format } from 'date-fns';
 import { TextInput } from 'react-native-gesture-handler';
+
+
 const MeusAgendamentos = () => {
     const [agendamentos, setAgendamentos] = useState('');
     const { idUser } = useAuthStore();
@@ -27,6 +29,7 @@ const MeusAgendamentos = () => {
       };
 
       const CharacterItem = ({ data }) => {
+        const formattedDate = format(parseISO(data.dataAgendamento), 'dd/MM/yyyy HH:mm');
         return (
             <TouchableOpacity>
             <View style={styles.characterContainer}>
@@ -35,7 +38,7 @@ const MeusAgendamentos = () => {
                   style={styles.text}
                   placeholder="Data de Agendamento"
                   placeholderTextColor="#afb9c9"
-                  value={format(data.dt_agendamento, 'dd/MM/yyyy HH:mm')}
+                  value={formattedDate}
                   editable={false}
                 />
                 

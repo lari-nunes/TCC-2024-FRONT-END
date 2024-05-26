@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import LogoImage from '../img/logotcc.png';
 import ButtonTpPessoa from '../TipoPessoa/ButtonTpPessoa';
 
@@ -18,7 +18,7 @@ const TipoPessoa = ({ navigation }) => {
       <View style={styles.content}>
         <Text style={styles.title}>Cadastrar-se como:</Text>
         <ButtonTpPessoa title="Cliente" onPress={() => handleCadastro('CLIENTE')} />
-        <ButtonTpPessoa title="Limpador de Piscina" onPress={() => handleCadastro('USUARIO')} />
+        <ButtonTpPessoa title="Piscineiro" onPress={() => handleCadastro('USUARIO')} />
       </View>
     </View>
   );
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   image: {
     width: 260,
     height: 250,
-    marginBottom: -200,
+    marginBottom: -250,
     marginTop: 80,
   },
 });

@@ -6,13 +6,13 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 7,
     borderRadius: 6,
-    backgroundColor: '#248bf2', 
+    backgroundColor: '#24DDFC', 
     width:250,
     alignItems: 'center',
     color: "#fff"
   },
   buttonTitle: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
     fontSize: 18,
   },

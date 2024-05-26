@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert} from 'react-native';
-import { useNavigation } from '@react-navigation/native'; 
+import { StyleSheet, Text, View, TextInput, Alert, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import MyButton from '../MyButton';
 import axios from 'axios';
 import Url from '../../Url';
-import { MaskedTextInput } from "react-native-mask-text";
-
+import { MaskedTextInput } from 'react-native-mask-text';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Feather } from '@expo/vector-icons';
 
 const CadastroCliente = () => {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     nm_pessoa: '',
     login: '',
@@ -20,10 +21,11 @@ const CadastroCliente = () => {
   const [address, setAddress] = useState({
     nm_municipio: '',
     rua: '',
-    bairro:'', 
+    bairro: '',
     numero: '',
     id_pessoa: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleCadastro = async () => {
     const { nm_pessoa, email, login, senha, telefone1, cpf } = formData;
@@ -33,10 +35,9 @@ const CadastroCliente = () => {
     }
 
     try {
-      console.log(formData)
+      console.log(formData);
       const response = await axios.post(`${Url}/pessoa`, formData);
 
-      
       const enderecoData = {
         id_pessoa: response.data.id_pessoa,
         nm_municipio: address.nm_municipio,
@@ -44,94 +45,105 @@ const CadastroCliente = () => {
         bairro: address.bairro,
         numero: address.numero
       };
-      
+
       const responseAddress = await axios.post(`${Url}/endereco`, enderecoData);
       if (responseAddress.status === 201) {
         Alert.alert('Sucesso', `Parabéns, ${nm_pessoa}! Cadastro salvo com sucesso!`);
-        handleRegister(); 
-      } 
+        handleRegister();
+      }
     } catch (error) {
-      Alert.alert('Erro',  error.response.data.message);
+      Alert.alert('Erro', error.response.data.message);
     }
   };
 
   const handleRegister = () => {
-    navigation.navigate('Login'); 
+    navigation.navigate('Login');
   };
 
   return (
-    <View style={styles.container}>
-      
-      <Text style={styles.title}>Cadastro de Cliente</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nome Completo"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, nm_pessoa: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, email: text })}
-      />
-      <MaskedTextInput
-        mask="999.999.999-99"
-        style={styles.input}
-        placeholder="CPF"
-        keyboardType='numeric'
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, cpf: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Login"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, login: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, senha: text })}
-      />
-      <MaskedTextInput
-        mask="(99) 99999-9999"
-        value={formData.telefone1}
-        style={styles.input}
-        placeholder="Telefone"
-        keyboardType='numeric'
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Cidade"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setAddress({ ...address, nm_municipio: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Rua"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setAddress({ ...address, rua: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Bairro"
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setAddress({ ...address, bairro: text })}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Número"
-        keyboardType='numeric'
-        placeholderTextColor="#afb9c9"
-        onChangeText={(text) => setAddress({ ...address, numero: text })}
-      />
-      <MyButton title="Cadastrar" onPress={handleCadastro} />
-    </View>
+    <SafeAreaView style={styles.block}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.title}>Cadastro de Cliente</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nome Completo"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setFormData({ ...formData, nm_pessoa: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setFormData({ ...formData, email: text })}
+          />
+          <MaskedTextInput
+            mask="999.999.999-99"
+            style={styles.input}
+            placeholder="CPF"
+            keyboardType='numeric'
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setFormData({ ...formData, cpf: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Login"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setFormData({ ...formData, login: text })}
+          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Senha"
+              secureTextEntry={!showPassword}
+              placeholderTextColor="#afb9c9"
+              onChangeText={(text) => setFormData({ ...formData, senha: text })}
+            />
+            <TouchableOpacity
+              style={styles.togglePassword}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color="#afb9c9" />
+            </TouchableOpacity>
+          </View>
+          <MaskedTextInput
+            mask="(99) 99999-9999"
+            value={formData.telefone1}
+            style={styles.input}
+            placeholder="Telefone"
+            keyboardType='numeric'
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setFormData({ ...formData, telefone1: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Cidade"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setAddress({ ...address, nm_municipio: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Rua"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setAddress({ ...address, rua: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Bairro"
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setAddress({ ...address, bairro: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Número"
+            keyboardType='numeric'
+            placeholderTextColor="#afb9c9"
+            onChangeText={(text) => setAddress({ ...address, numero: text })}
+          />
+          <MyButton title="Cadastrar" onPress={handleCadastro} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -141,7 +153,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0f223d',
-    padding: 20
+    padding: 20,
+    marginTop: 50
   },
   title: {
     fontSize: 24,
@@ -150,7 +163,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   input: {
-    width: '100%',
+    width: 350,
     height: 40,
     borderWidth: 1,
     borderColor: '#3876d9',
@@ -159,6 +172,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#fff'
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    width: 350,
+    borderRadius: 5,
+    height: 40,
+    marginBottom: 10,
+    borderColor: '#3876d9',
+    paddingHorizontal: 10,
+  },
+  togglePassword: {
+    marginLeft: -30,
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#fff'
+  },
+  block: {
+    flex: 1,
+    backgroundColor: '#0f223d',
+    alignItems: 'center',
+    marginTop: 38,
+  }
 });
 
 export default CadastroCliente;
