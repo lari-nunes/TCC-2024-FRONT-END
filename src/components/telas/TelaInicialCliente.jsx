@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
 import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
@@ -18,6 +19,10 @@ const TelaInicialCliente = () => {
   const navigation = useNavigation(); 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = {backgroundColor: 'black', padding: 20};
 
   const fetchLimpadores = async () => {
     try{
@@ -95,6 +100,7 @@ const TelaInicialCliente = () => {
     <View style={styles.container}>
       <View style={styles.content}>
       <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+      
       <TextInput
               numberOfLines={1}
               editable={false}
@@ -112,12 +118,27 @@ const TelaInicialCliente = () => {
               }}
           />
       </View>
+      
     </View>
+     
     <View style={styles.separator} />
+
+    
 
     <View>
     <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos}/>
     </View>
+
+    <PaperProvider>
+        <Portal>
+          <Modal visible={visible} onDismiss={hideModal} style={styles.modal}>
+            <Text>Example Modal.  Click outside this area to dismiss.</Text>
+          </Modal>
+        </Portal>
+        <Button style={{marginTop: 30, color: '#f2f', fontSize: 16}} onPress={showModal}>
+          Show
+        </Button>
+      </PaperProvider>
       <View style={styles.textContainer}>
         <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
       </View>
@@ -150,6 +171,10 @@ const styles = StyleSheet.create({
   textInfo: {
     flex: 1,
   },
+  modal: {
+    backgroundColor: 'white', padding: 20
+  }
+  ,
   textLabel: {
     fontSize: 14,
     fontWeight: 'bold',

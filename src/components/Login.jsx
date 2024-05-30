@@ -48,8 +48,8 @@ const Login = () => {
     const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
     console.log(data);
     if (data.tp_pessoa == 'CLIENTE') {
-      //navigation.navigate('TelaInicialCliente');
-      navigation.navigate('TelaInicialUsuario');
+      navigation.navigate('TelaInicialCliente');
+      //navigation.navigate('TelaInicialUsuario');
     } else {
       navigation.navigate('TelaInicialUsuario');
     }
