@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput } from 'react-native';
-import { Modal, Portal, Button, PaperProvider } from 'react-native-paper';
+import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
 import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
@@ -8,31 +8,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaskedText } from "react-native-mask-text";
 import { useNavigation } from '@react-navigation/native'; 
 import ButtonAgendamentos from './ButtonAgendamentos';
-import DateTimePicker from '@react-native-community/datetimepicker'
 
 const TelaInicialCliente = () => {
   const { idUser } = useAuthStore();
   const [nmPessoa, setNmPessoa] = useState();
   const [currentTime, setCurrentTime] = useState('');
   const [limpadores, setLimpadores] = useState('');
-  const [loading, setLoading] = useState('');
   const navigation = useNavigation(); 
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'black', padding: 20};
 
   const fetchLimpadores = async () => {
-    try{
-      const {data} = await axios.get(`${Url}/pessoa/limpadores`);
-      setLimpadores(data)
-    }catch(error){
+    try {
+      const { data } = await axios.get(`${Url}/pessoa/limpadores`);
+      setLimpadores(data);
+    } catch (error) {
       Alert.alert(error.message);
     }
-  }
-
+  };
 
   useEffect(() => {
     const now = new Date();
@@ -50,7 +45,6 @@ const TelaInicialCliente = () => {
     setCurrentTime(greeting);
     handleName();
     fetchLimpadores();
-
   }, []);
 
   const CharacterItem = ({ data }) => {
@@ -74,13 +68,10 @@ const TelaInicialCliente = () => {
       </TouchableOpacity>
     );
   };
-  
 
   const handleName = async () => {
-
     try {
-      console.log(idUser)
-      const {data} = await axios.get(`${Url}/pessoa/${idUser}`);
+      const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
       setNmPessoa(data.nm_pessoa);
     } catch (error) {
       Alert.alert('Erro', error.message);
@@ -90,65 +81,46 @@ const TelaInicialCliente = () => {
 
   const handleAgendamentos = () => {
     navigation.navigate('MeusAgendamentos');
-    
   };
 
   return (
-    <>
-    
-    <SafeAreaView style={styles.block}>
-    <View style={styles.container}>
-      <View style={styles.content}>
-      <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
-      
-      <TextInput
-              numberOfLines={1}
-              editable={false}
-              placeholder="Choose Your Date of Birth"
-              value={new Date().toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-              })}
-              style={{
-                fontSize: 16,
-                paddingRight: 100,
-                color: 'white',
-                
-              }}
-          />
-      </View>
-      
-    </View>
-     
-    <View style={styles.separator} />
-
-    
-
-    <View>
-    <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos}/>
-    </View>
-
     <PaperProvider>
+      <SafeAreaView style={styles.block}>
+        <View style={styles.container}>
+          <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+          <TextInput
+            numberOfLines={1}
+            editable={false}
+            value={new Date().toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+            })}
+            style={styles.dateInput}
+          />
+          
+          <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos} />
+          <View style={styles.modalButton}>
+            <Button onPress={showModal} style={styles.showButton}>
+              Filtrar piscineiros(as) por:
+            </Button>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
+          </View>
+          <FlatList
+            data={limpadores}
+            renderItem={({ item }) => <CharacterItem data={item} />}
+            keyExtractor={(item) => item.id_pessoa.toString()}
+          />
+        </View>
         <Portal>
-          <Modal visible={visible} onDismiss={hideModal} style={styles.modal}>
-            <Text>Example Modal.  Click outside this area to dismiss.</Text>
+          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
+            <Text style={styles.modalText}>Example Modal. Click outside this area to dismiss.</Text>
           </Modal>
         </Portal>
-        <Button style={{marginTop: 30, color: '#f2f', fontSize: 16}} onPress={showModal}>
-          Show
-        </Button>
-      </PaperProvider>
-      <View style={styles.textContainer}>
-        <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
-      </View>
-        <FlatList
-          data={limpadores}
-          renderItem={({ item }) => <CharacterItem data={item} />}
-          keyExtractor={(item) => item.id_pessoa.toString()}
-        />
-    </SafeAreaView>
-    </>
+      </SafeAreaView>
+    </PaperProvider>
   );
 };
 
@@ -157,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 100,
+    padding: 20,
   },
   characterContainer: {
     padding: 24,
@@ -171,10 +143,22 @@ const styles = StyleSheet.create({
   textInfo: {
     flex: 1,
   },
-  modal: {
-    backgroundColor: 'white', padding: 20
-  }
-  ,
+  showButton: {
+    color: '#f2f',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
   textLabel: {
     fontSize: 14,
     fontWeight: 'bold',
@@ -183,7 +167,7 @@ const styles = StyleSheet.create({
   textDetails: {
     flex: 1.2,
     marginLeft: 10,
-    marginBottom: -1
+    marginBottom: -1,
   },
   text: {
     color: "#000",
@@ -192,28 +176,28 @@ const styles = StyleSheet.create({
   description: {
     color: "#000",
     fontSize: 14,
-    flexShrink: 1,  // Adiciona flexShrink para permitir que o texto se ajuste ao contêiner
+    flexShrink: 1,
   },
   textContainer: {
-    width: '100%', // Garanta que o contêiner ocupe a largura total
-    paddingHorizontal: 16, // Ajuste o padding conforme necessário
+    width: '100%',
+    paddingHorizontal: 16,
   },
   textDisp: {
     color: "#fff",
     fontSize: 18,
     margin: 12,
     marginLeft: 0,
-    alignSelf: 'flex-start', // Adicione esta linha
+    alignSelf: 'flex-start',
   },
   titleContent: {
     color: '#fff',
     fontSize: 20,
+    marginBottom: -10,
   },
   block: {
     flex: 1,
     backgroundColor: '#0f223d',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   separator: {
     height: 1,
@@ -221,6 +205,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     marginVertical: 10,
   },
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  dateInput: {
+    fontSize: 16,
+    padding: 10,
+    color: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    width: '100%',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalButton: {
+    backgroundColor: '#fff',
+    width: 250,
+    height: 50,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
 export default TelaInicialCliente;
