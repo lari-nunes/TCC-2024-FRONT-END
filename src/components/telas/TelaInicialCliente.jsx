@@ -1,24 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
 import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
+import MyButton from '../MyButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaskedText } from "react-native-mask-text";
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
 import ButtonAgendamentos from './ButtonAgendamentos';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 const TelaInicialCliente = () => {
   const { idUser } = useAuthStore();
   const [nmPessoa, setNmPessoa] = useState();
   const [currentTime, setCurrentTime] = useState('');
-  const [limpadores, setLimpadores] = useState('');
-  const navigation = useNavigation(); 
+  const [limpadores, setLimpadores] = useState([]);
+  const navigation = useNavigation();
   const [date, setDate] = useState(new Date());
   const [visible, setVisible] = useState(false);
+  const [dateTime, setDateTime] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  const [mode, setMode] = useState('date');
+  const [cidade, setCidade] = useState('');
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dateTime;
+    setShowPicker(Platform.OS === 'ios');
+    setDateTime(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShowPicker(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
 
   const fetchLimpadores = async () => {
     try {
@@ -83,6 +106,33 @@ const TelaInicialCliente = () => {
     navigation.navigate('MeusAgendamentos');
   };
 
+  const handleFilter = async () => {
+    try {
+      const formattedDate = format(dateTime, 'yyyy-MM-dd');      
+      const {data} = await axios.get(`${Url}/pessoa/listaFiltro/${formattedDate}?nm_municipio=${cidade}`);
+    
+      if(data.length > 0){
+        setLimpadores(data);
+        hideModal();
+      } else {
+        Alert.alert('Erro', "Não foram encontrados limpadores com o filtro informado");
+        hideModal();
+      }
+      
+        
+      
+    } catch (error) {
+    
+      if(error.response.status === 404){
+        Alert.alert('Erro', "Não foi encontrado limpadores com o filtro informado");
+        hideModal();
+        return;
+      }
+      Alert.alert('Erro', error.message);
+      console.log(error);
+    }
+  };
+
   return (
     <PaperProvider>
       <SafeAreaView style={styles.block}>
@@ -116,7 +166,33 @@ const TelaInicialCliente = () => {
         </View>
         <Portal>
           <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
-            <Text style={styles.modalText}>Example Modal. Click outside this area to dismiss.</Text>
+            <TextInput 
+              style={styles.modalText}
+              placeholder="Cidade"
+              placeholderTextColor="#afb9c9"
+              onChangeText={setCidade}
+              value={cidade}
+            />
+            <View>
+              <ButtonAgendamentos onPress={showDatepicker} title="Selecionar Data" />
+              {showPicker && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={dateTime}
+                  mode={mode}
+                  display="default"
+                  onChange={handleDateChange}
+                />
+              )}
+            </View>
+              <TextInput
+                style={styles.inputDataTime}
+                placeholder="Data"
+                placeholderTextColor="#afb9c9"
+                value={format(dateTime, 'dd/MM/yyyy')}
+                editable={false}
+              />
+            <MyButton title="Filtrar" onPress={handleFilter} />
           </Modal>
         </Portal>
       </SafeAreaView>
@@ -151,13 +227,22 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 20,
     borderRadius: 8,
-    height: 200,
+    height: 300,
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalText: {
     fontSize: 16,
     textAlign: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: '#000'
   },
   textLabel: {
     fontSize: 14,
@@ -182,6 +267,18 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
   },
+  inputDataTime: {
+    height: 40,
+    width: 180,
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#000',
+  },  
   textDisp: {
     color: "#fff",
     fontSize: 18,
@@ -206,24 +303,25 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   buttonContainer: {
-    marginTop: 10,
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
   },
   dateInput: {
-    fontSize: 16,
-    padding: 10,
-    color: 'white',
+    height: 40,
+    borderBottomColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#fff',
     width: '100%',
     textAlign: 'center',
     marginBottom: 10,
+    color: 'white'
   },
   modalButton: {
     backgroundColor: '#fff',
     width: 250,
     height: 50,
-    borderRadius: 10,
+    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   }

@@ -7,7 +7,7 @@ import Url from '../../Url';
 import { useRoute } from "@react-navigation/native";
 import { MaskedTextInput } from "react-native-mask-text";
 import MyButton from '../MyButton';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker'; 
 import { format } from 'date-fns';
 import ButtonAgendamentos from './ButtonAgendamentos';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -59,7 +59,7 @@ const AgendamentoLimpeza = ({navigation}) => {
       const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
       setLimpador(data);
     }catch (error) {
-      Alert.alert('Erro',  error.response.data.message);
+      Alert.alert('Erro', error.response.data.message);
     }
   };
 
