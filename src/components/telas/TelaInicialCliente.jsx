@@ -76,7 +76,7 @@ const TelaInicialCliente = () => {
         <View style={styles.characterContainer}>
           <View style={styles.textInfo}>
             <Text style={styles.textLabel}>Piscineiro(a):</Text>
-            <Text style={styles.textLabel}>Telefone:</Text>
+            <Text style={styles.textLabel}>WhatsApp:</Text>
           </View>
           <View style={styles.textDetails}>
             <Text style={styles.text}>{data.nm_pessoa}</Text>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
-import MyButton from './MyButton';
 import LogoImage from './img/logotcc.png';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'; 
@@ -8,7 +7,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Url from '../Url';
 import useAuthStore from '../SaveId';
 import { Feather } from '@expo/vector-icons';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const Login = () => {
   const [usuario, setUsuario] = useState('');
@@ -16,6 +14,7 @@ const Login = () => {
   const { idUser, setIdUser } = useAuthStore();
   const navigation = useNavigation();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (idUser !== null) {
@@ -24,11 +23,7 @@ const Login = () => {
   }, [idUser]);
 
   const handleLogin = async () => {
-    if (usuario === '' || senha === '') {
-      Alert.alert('Erro', 'Preencha todos os campos!');
-      return;
-    }
-
+    setIsLoading(true);
     try {
       const response = await axios.post(`${Url}/login`, { login: usuario, senha });
 
@@ -41,6 +36,8 @@ const Login = () => {
       } else {
         Alert.alert('Erro', 'Ocorreu um erro ao tentar fazer login!');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,7 +46,6 @@ const Login = () => {
     console.log(data);
     if (data.tp_pessoa == 'CLIENTE') {
       navigation.navigate('TelaInicialCliente');
-      //navigation.navigate('TelaInicialUsuario');
     } else {
       navigation.navigate('TelaInicialUsuario');
     }
@@ -57,6 +53,14 @@ const Login = () => {
 
   const handleNavRegister = () => {
     navigation.navigate('TipoPessoa');
+  };
+
+  const handleAccess = () => {
+    if (usuario === '' || senha === '') {
+      Alert.alert('Erro', 'Preencha todos os campos!');
+    } else {
+      handleLogin();
+    }
   };
 
   return (
@@ -86,7 +90,9 @@ const Login = () => {
               <Feather name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <MyButton title="Entrar" onPress={handleLogin} />
+          <TouchableOpacity style={styles.button} onPress={handleAccess} disabled={isLoading}>
+            <Text style={styles.buttontext}>{isLoading ? 'Acessando conta...' : 'Login'}</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleNavRegister}>
             <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
           </TouchableOpacity>
@@ -158,6 +164,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     flex: 1,
+  },
+  button: {
+    backgroundColor: '#36D6EE',
+    width: '80%', 
+    borderRadius: 10,
+    paddingVertical: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10, 
+    alignSelf: 'center', 
+  },
+  buttontext: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
