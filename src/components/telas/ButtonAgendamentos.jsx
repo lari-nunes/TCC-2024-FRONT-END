@@ -7,15 +7,16 @@ const styles = StyleSheet.create({
     margin: 4,
     borderRadius: 6,
     backgroundColor: '#E6CC81', 
-    height: 50,
-    width:280,
+    height: 45,
+    width:295,
     alignItems: 'center',
     justifyContent: 'center',
     color: "#fff",
   },
   buttonTitle: {
     color: '#000',
-    fontSize: 16,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
 });
 

@@ -6,15 +6,16 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 7,
     borderRadius: 6,
-    backgroundColor: '#24DDFC', 
+    backgroundColor: '#24b8d1', 
     width:250,
     alignItems: 'center',
     color: "#fff"
   },
-  buttonTitle: {
-    color: '#000',
+  buttonTitle: {  
+    color: '#fff',
     fontSize: 18,
-    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
   },
 });
 

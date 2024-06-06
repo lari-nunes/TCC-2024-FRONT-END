@@ -148,17 +148,22 @@ const TelaInicialCliente = () => {
             })}
             style={styles.dateInput}
           />
+
+          <View style={styles.buttonAgend}>
+            <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos} />
+          </View>
           
-          <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos} />
+          
           <View style={styles.modalButton}>
             <Button onPress={showModal} style={styles.showButton}>
-              Filtrar piscineiros(as) por:
+              <Text> Filtrar piscineiros(as) por:</Text>
             </Button>
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
           </View>
           <FlatList
+            style={styles.flatList}
             data={limpadores}
             renderItem={({ item }) => <CharacterItem data={item} />}
             keyExtractor={(item) => item.id_pessoa.toString()}
@@ -168,7 +173,7 @@ const TelaInicialCliente = () => {
           <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
             <TextInput 
               style={styles.modalText}
-              placeholder="Cidade"
+              placeholder="Digite a cidade"
               placeholderTextColor="#afb9c9"
               onChangeText={setCidade}
               value={cidade}
@@ -208,9 +213,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   characterContainer: {
-    padding: 24,
+    padding: 18,
     backgroundColor: "#36D6EE",
-    margin: 16,
+    margin: 10,
     borderRadius: 8,
     width: 320,
     flexDirection: "row",
@@ -220,7 +225,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   showButton: {
-    color: '#f2f',
+    textAlign: 'center',
   },
   modalContainer: {
     backgroundColor: 'white',
@@ -230,6 +235,10 @@ const styles = StyleSheet.create({
     height: 300,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonAgend: {
+    padding: 5,
+    margin: 1.5,
   },
   modalText: {
     fontSize: 16,

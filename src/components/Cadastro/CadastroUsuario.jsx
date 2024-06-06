@@ -10,6 +10,7 @@ import { Feather } from '@expo/vector-icons';
 
 const CadastroUsuario = () => {
   const navigation = useNavigation(); 
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nm_pessoa: '',
     login: '',
@@ -32,6 +33,7 @@ const CadastroUsuario = () => {
       return;
     }
     try {
+      setIsLoading(true);
       console.log(formData);
       const response = await axios.post(`${Url}/pessoa`, formData);
 
@@ -47,6 +49,8 @@ const CadastroUsuario = () => {
       } 
     } catch (error) {
       Alert.alert('Erro',error.response.data.message);
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,13 +118,16 @@ const CadastroUsuario = () => {
               onChangeText={(text) => setAddress({ ...address, nm_municipio: text })}
             />
             <TextInput
-              style={styles.input}
+              style={styles.inputObs}
               placeholder="Descrição"
               placeholderTextColor="#afb9c9"
               maxLength={200}
               onChangeText={(text) => setFormData({ ...formData, descricao: text })}
+              multiline={true}
             />
-            <MyButton title="Cadastrar" onPress={handleCadastro} />
+            <TouchableOpacity style={styles.buttonCad} onPress={handleCadastro} disabled={isLoading}>
+              <Text style={styles.buttonText}>{isLoading ? 'Cadastrando conta...' : 'Cadastrar'}</Text>
+          </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -137,12 +144,37 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 100
   },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  buttonCad: {
+    backgroundColor: '#24b8d1',
+    width: '80%', 
+    borderRadius: 10,
+    paddingVertical: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10, 
+    alignSelf: 'center',
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#fff'
   },
+  inputObs: {
+    width: 350,
+    minHeight: 40,
+    borderWidth: 1,
+    borderColor: '#3876d9',
+    borderRadius: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: '#fff',
+  },  
   input: {
     width: '100%',
     height: 40,

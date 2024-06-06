@@ -10,6 +10,7 @@ import { Feather } from '@expo/vector-icons';
 
 const CadastroCliente = () => {
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     nm_pessoa: '',
     login: '',
@@ -35,6 +36,7 @@ const CadastroCliente = () => {
     }
 
     try {
+      setIsLoading(true);
       console.log(formData);
       const response = await axios.post(`${Url}/pessoa`, formData);
 
@@ -53,6 +55,8 @@ const CadastroCliente = () => {
       }
     } catch (error) {
       Alert.alert('Erro', error.response.data.message);
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -140,7 +144,9 @@ const CadastroCliente = () => {
             placeholderTextColor="#afb9c9"
             onChangeText={(text) => setAddress({ ...address, numero: text })}
           />
-          <MyButton title="Cadastrar" onPress={handleCadastro} />
+           <TouchableOpacity style={styles.buttonCad} onPress={handleCadastro} disabled={isLoading}>
+            <Text style={styles.buttonText}>{isLoading ? 'Cadastrando conta...' : 'Cadastrar'}</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -156,11 +162,27 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 50
   },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#fff'
+  },
+  buttonCad: {
+    backgroundColor: '#24b8d1',
+    width: '80%', 
+    borderRadius: 10,
+    paddingVertical: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10, 
+    alignSelf: 'center', 
+
   },
   input: {
     width: 350,
