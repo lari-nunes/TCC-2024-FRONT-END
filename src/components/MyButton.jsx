@@ -7,13 +7,14 @@ const styles = StyleSheet.create({
     margin: 4,
     borderRadius: 6,
     backgroundColor: '#24b8d1', 
-    width:150,
+    width:260,
     alignItems: 'center',
-    color: "#fff"
+    color: "#fff",
+    height: 40
   },
   buttonTitle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 

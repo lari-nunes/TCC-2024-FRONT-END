@@ -6,7 +6,6 @@ import useAuthStore from '../../SaveId';
 import Url from '../../Url';
 import MyButton from '../MyButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaskedText } from "react-native-mask-text";
 import { useNavigation } from '@react-navigation/native';
 import ButtonAgendamentos from './ButtonAgendamentos';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -20,14 +19,30 @@ const TelaInicialUsuario = () => {
   const navigation = useNavigation();
   const [dateTime, setDateTime] = useState(new Date());
   const [visible, setVisible] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [mode, setMode] = useState('date');
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || dateTime;
+    setShowPicker(Platform.OS === 'ios');
+    setDateTime(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShowPicker(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
   const fetchLimpadores = async () => {
     try {
       const { data } = await axios.get(`${Url}/pessoa/limpadores`);
-   
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -88,6 +103,7 @@ const TelaInicialUsuario = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
           <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+
           <TextInput
             numberOfLines={1}
             editable={false}
@@ -99,25 +115,31 @@ const TelaInicialUsuario = () => {
             style={styles.dateInput}
           />
 
-        <Portal>
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
-            <TextInput 
-              style={styles.modalText}
-              placeholder="Digite a cidade"
-              placeholderTextColor="#afb9c9"
-            />
-            <View>
-              <ButtonAgendamentos onPress={showDatepicker} title="Selecionar Data" />
-              {showPicker && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={dateTime}
-                  mode={mode}
-                  display="default"
-                  onChange={handleDateChange}
-                />
-              )}
-            </View>
+          <View style={styles.modalButton}>
+            <Button onPress={showModal} >
+              <Text style={styles.showButton}> Cadastrar serviço</Text>
+            </Button>
+          </View>
+
+          <Portal>
+            <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
+              <TextInput 
+                style={styles.modalText}
+                placeholder="Digite a cidade"
+                placeholderTextColor="#afb9c9"
+              />
+              <View>
+                <ButtonAgendamentos onPress={showDatepicker} title="Selecionar data de serviço" />
+                {showPicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={dateTime}
+                    mode={mode}
+                    display="default"
+                    onChange={handleDateChange}
+                  />
+                )}
+              </View>
               <TextInput
                 style={styles.inputDataTime}
                 placeholder="Data"
@@ -125,9 +147,14 @@ const TelaInicialUsuario = () => {
                 value={format(dateTime, 'dd/MM/yyyy')}
                 editable={false}
               />
-            <MyButton title="Filtrar"  />
-          </Modal>
-        </Portal>
+              <TextInput
+                style={styles.modalText}
+                placeholder="Campo vazio"
+                placeholderTextColor="#afb9c9"
+              />
+              <MyButton title="Cadastrar serviço" />
+            </Modal>
+          </Portal>
 
           <Text style={styles.textAgend}>Meus Agendamentos</Text>
           <FlatList
@@ -159,7 +186,19 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 20,
     borderRadius: 8,
-    height: 300,
+    height: 320,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  showButton: {
+    color: '#000',
+  },
+  modalButton: {
+    backgroundColor: '#E6CC81',
+    width: 200,
+    height: 40,
+    borderRadius: 5,
+    marginTop: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -179,7 +218,8 @@ const styles = StyleSheet.create({
   textAgend: {
     color: "#fff",
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    padding: 6,
   },
   text: {
     color: "#000",
@@ -210,7 +250,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     color: 'white'
-  }
+  },
+  inputDataTime: {
+    height: 40,
+    width: 180,
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#000',
+  },
 });
 
 export default TelaInicialUsuario;
