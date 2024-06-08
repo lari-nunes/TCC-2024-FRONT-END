@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { StyleSheet, Text, View, Alert, FlatList, TouchableOpacity, TextInput, Platform, BackHandler } from 'react-native';
 import { Modal, Portal, Button, Provider as PaperProvider } from 'react-native-paper';
 import axios from 'axios';
 import useAuthStore from '../../SaveId';
@@ -10,9 +10,10 @@ import { useNavigation } from '@react-navigation/native';
 import ButtonAgendamentos from './ButtonAgendamentos';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TelaInicialUsuario = () => {
-  const { idUser } = useAuthStore();
+  const { idUser, setIdUser } = useAuthStore();
   const [nmPessoa, setNmPessoa] = useState();
   const [currentTime, setCurrentTime] = useState('');
   const [agendamentos, setAgendamentos] = useState([]);
@@ -30,6 +31,19 @@ const TelaInicialUsuario = () => {
     setShowPicker(Platform.OS === 'ios');
     setDateTime(currentDate);
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const showMode = (currentMode) => {
     setShowPicker(true);
@@ -66,6 +80,29 @@ const TelaInicialUsuario = () => {
     fetchLimpadores();
   }, []);
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Confirmação',
+      'Você deseja sair mesmo?',
+      [
+        {
+          text: 'Sim',
+          onPress: () => {
+            setIdUser(null);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          },
+        },
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+      ],
+    );
+  };
+
   const handleName = async () => {
     try {
       const { data } = await axios.get(`${Url}/pessoa/${idUser}`);
@@ -101,20 +138,24 @@ const TelaInicialUsuario = () => {
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
+        <View style={styles.containerApp}>
+          <View style={styles.leftContainer}>
+            <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+            <TextInput
+              numberOfLines={1}
+              editable={false}
+              value={new Date().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+              })}
+              style={styles.dateInput}
+            />
+          </View>
+          <Ionicons name="exit-outline" size={32} color="white" onPress={handleLogout} mode="contained" />
+        </View>
+
         <View style={styles.content}>
-          <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
-
-          <TextInput
-            numberOfLines={1}
-            editable={false}
-            value={new Date().toLocaleDateString('pt-BR', {
-              day: '2-digit',
-              month: 'long',
-              year: 'numeric',
-            })}
-            style={styles.dateInput}
-          />
-
           <View style={styles.modalButton}>
             <Button onPress={showModal} >
               <Text style={styles.showButton}> Cadastrar serviço</Text>
@@ -175,6 +216,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+  },
+  containerApp: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15, 
+    margin: 10,
+  },
+  leftContainer: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    margin: 10, 
   },
   content: {
     alignItems: 'center',
@@ -257,12 +310,11 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
     textAlign: 'center',
-    fontSize: 16,
-    color: '#000',
-  },
+    marginBottom: 10,
+    padding: 10,
+    color: '#000'
+  }
 });
 
 export default TelaInicialUsuario;
