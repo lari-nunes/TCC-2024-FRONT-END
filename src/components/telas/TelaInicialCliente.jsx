@@ -19,15 +19,27 @@ const TelaInicialCliente = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [limpadores, setLimpadores] = useState([]);
   const navigation = useNavigation();
-  const [date, setDate] = useState(new Date());
-  const [visible, setVisible] = useState(false);
   const [dateTime, setDateTime] = useState(new Date());
+  const [visible, setVisible] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState('date');
   const [cidade, setCidade] = useState('');
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
@@ -54,19 +66,6 @@ const TelaInicialCliente = () => {
   };
 
   useEffect(() => {
-    const backAction = () => {
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
-
-  useEffect(() => {
     const now = new Date();
     const currentHour = now.getHours();
 
@@ -83,29 +82,6 @@ const TelaInicialCliente = () => {
     handleName();
     fetchLimpadores();
   }, []);
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Confirmação',
-      'Você deseja sair mesmo?',
-      [
-        {
-          text: 'Sim',
-          onPress: () => {
-            setIdUser(null);
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
-          },
-        },
-        {
-          text: 'Não',
-          style: 'cancel',
-        },
-      ],
-    );
-  };
 
   const CharacterItem = ({ data }) => {
     return (
@@ -143,6 +119,29 @@ const TelaInicialCliente = () => {
     navigation.navigate('MeusAgendamentos');
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Confirmação',
+      'Você deseja sair mesmo?',
+      [
+        {
+          text: 'Sim',
+          onPress: () => {
+            setIdUser(null);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          },
+        },
+        {
+          text: 'Não',
+          style: 'cancel',
+        },
+      ],
+    );
+  };
+
   const handleFilter = async () => {
     try {
       const formattedDate = format(dateTime, 'yyyy-MM-dd');      
@@ -171,30 +170,34 @@ const TelaInicialCliente = () => {
     <PaperProvider>
       <SafeAreaView style={styles.block}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
-            <Ionicons name="exit-outline" size={32} color="white" onPress={handleLogout} />
-          </View>
-          <TextInput
-            numberOfLines={1}
-            editable={false}
-            value={new Date().toLocaleDateString('pt-BR', {
-              day: '2-digit',
-              month: 'long',
-              year: 'numeric',
-            })}
-            style={styles.dateInput}
-          />
 
+          <View style={styles.containerApp}>
+            <View>
+            <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+            <TextInput
+              numberOfLines={1}
+              editable={false}
+              value={new Date().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+              })}
+              style={styles.dateInput}
+            />
+            </View>
+            
+            <View >
+              <Ionicons name="exit-outline" size={32} color="white" onPress={handleLogout} mode="contained" />
+            </View>
+          </View>
+    
           <View style={styles.buttonAgend}>
             <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos} />
-          </View>
-          
-          <View style={styles.modalButton}>
-            <Button onPress={showModal} style={styles.showButton}>
-              <Text> Filtrar piscineiros(as) por:</Text>
+            <Button onPress={showModal} style={styles.modalButton}>
+              <Text style={styles.showButton}> Filtrar piscineiros(as) por:</Text>
             </Button>
           </View>
+   
           <View style={styles.textContainer}>
             <Text style={styles.textDisp}>Piscineiros(as) Disponíveis:</Text>
           </View>
@@ -204,6 +207,7 @@ const TelaInicialCliente = () => {
             renderItem={({ item }) => <CharacterItem data={item} />}
             keyExtractor={(item) => item.id_pessoa.toString()}
           />
+
         </View>
         <Portal>
           <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
@@ -244,9 +248,25 @@ const TelaInicialCliente = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#0f223d',
-    alignItems: 'center',
-    justifyContent: 'center',
+    //alignItems: 'center',
+    //justifyContent: 'center',
     padding: 20,
+  },
+  containerApp: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15, 
+    
+    margin: 5,
+  },
+  logoutButton: {
+    backgroundColor: "#E6CC81",
+    height: 50
+  },
+  ionicons: {
+    marginLeft: 220,
+    marginEnd: 100,
   },
   characterContainer: {
     padding: 18,
@@ -257,11 +277,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+
   textInfo: {
     flex: 1,
   },
   showButton: {
     textAlign: 'center',
+    color: '#000',
   },
   modalContainer: {
     backgroundColor: 'white',
@@ -273,7 +295,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonAgend: {
-    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
     margin: 1.5,
   },
   modalText: {
@@ -287,63 +310,79 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-    color: '#000',
+    color: '#000'
   },
-  inputDataTime: {
-    fontSize: 16,
-    textAlign: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+  textLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
     color: '#000',
-  },
-  flatList: {
-    width: '100%',
   },
   textDetails: {
     flex: 1.2,
     marginLeft: 10,
     marginBottom: -1,
   },
-  textContainer: {
-    justifyContent: 'center',
-  },
-  textLabel: {
-    fontWeight: 'bold',
-    color: '#000',
-  },
   text: {
-    color: '#000',
+    color: "#000",
+    fontSize: 14,
   },
-  textDisp: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  description: {
+    color: "#000",
+    fontSize: 14,
+    flexShrink: 1,
+  },
+  textContainer: {
+    width: '100%',
+    paddingHorizontal: 16,
+  },
+  inputDataTime: {
+    height: 40,
+    width: 180,
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
     marginTop: 10,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#000',
+  },  
+  textDisp: {
+    color: "#fff",
+    fontSize: 18,
+    margin: 12,
+    marginLeft: 0,
+    alignSelf: 'flex-start',
   },
   titleContent: {
-    fontSize: 20,
     color: '#fff',
+    fontSize: 20,
+    marginBottom: -10,
+  },
+  block: {
+    flex: 1,
+    backgroundColor: '#0f223d',
+    alignItems: 'center',
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: '#ddd',
+    marginVertical: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
   },
   dateInput: {
-    fontSize: 16,
-    textAlign: 'center',
-    alignItems: 'center',
+    height: 40,
+    borderBottomColor: 'white',
+    borderBottomWidth: 1,
     width: '100%',
-    height: 35,
-    width: 300,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    color: '#000',
-    backgroundColor: '#E6CC81',
+    marginBottom: 10,
+    color: 'white'
   },
   modalButton: {
     backgroundColor: '#fff',
@@ -352,14 +391,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  header: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
+  }
 });
 
 export default TelaInicialCliente;

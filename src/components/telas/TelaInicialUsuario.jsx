@@ -7,9 +7,7 @@ import Url from '../../Url';
 import MyButton from '../MyButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import ButtonAgendamentos from './ButtonAgendamentos';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TelaInicialUsuario = () => {
@@ -20,8 +18,12 @@ const TelaInicialUsuario = () => {
   const navigation = useNavigation();
   const [dateTime, setDateTime] = useState(new Date());
   const [visible, setVisible] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState('date');
+  const [servico, setServico] = useState({
+    id_pessoa: idUser,
+    descricao: '',
+    vlr_estimado: 0
+  });
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -54,9 +56,10 @@ const TelaInicialUsuario = () => {
     showMode('date');
   };
 
-  const fetchLimpadores = async () => {
+  const fetchAgenda = async () => {
     try {
-      const { data } = await axios.get(`${Url}/pessoa/limpadores`);
+      const { data } = await axios.get(`${Url}/agenda/listarAgendamentosLimpador/${idUser}`);
+      setAgendamentos(data);
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -77,7 +80,7 @@ const TelaInicialUsuario = () => {
 
     setCurrentTime(greeting);
     handleName();
-    fetchLimpadores();
+    fetchAgenda();
   }, []);
 
   const handleLogout = () => {
@@ -102,6 +105,17 @@ const TelaInicialUsuario = () => {
       ],
     );
   };
+
+  const handleRegister = async ()=> {
+    try {
+      console.log(servico)
+      const { data } = await axios.post(`${Url}/servico`, servico);
+      Alert.alert('Sucesso','Serviço cadastrado com sucesso');
+    } catch (error) {
+      Alert.alert('Erro', error.message);
+    }
+
+  }
 
   const handleName = async () => {
     try {
@@ -166,34 +180,17 @@ const TelaInicialUsuario = () => {
             <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modalContainer}>
               <TextInput 
                 style={styles.modalText}
-                placeholder="Digite a cidade"
+                placeholder="Nome do serviço"
                 placeholderTextColor="#afb9c9"
-              />
-              <View>
-                <ButtonAgendamentos onPress={showDatepicker} title="Selecionar data de serviço" />
-                {showPicker && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={dateTime}
-                    mode={mode}
-                    display="default"
-                    onChange={handleDateChange}
-                  />
-                )}
-              </View>
-              <TextInput
-                style={styles.inputDataTime}
-                placeholder="Data"
-                placeholderTextColor="#afb9c9"
-                value={format(dateTime, 'dd/MM/yyyy')}
-                editable={false}
+                onChangeText={(text) => setServico({ ...servico, descricao: text })}
               />
               <TextInput
                 style={styles.modalText}
-                placeholder="Campo vazio"
+                placeholder="Valor do Serviço"
                 placeholderTextColor="#afb9c9"
+                onChangeText={(number) => setServico({ ...servico, vlr_estimado: number })}
               />
-              <MyButton title="Cadastrar serviço" />
+              <MyButton title="Cadastrar serviço" onPress={handleRegister} />
             </Modal>
           </Portal>
 
@@ -301,20 +298,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '100%',
     textAlign: 'center',
-    marginBottom: 10,
-    color: 'white'
+    fontSize: 20,
+    color: 'white',
   },
-  inputDataTime: {
-    height: 40,
-    width: 180,
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 5,
-    textAlign: 'center',
-    marginBottom: 10,
-    padding: 10,
-    color: '#000'
-  }
 });
 
 export default TelaInicialUsuario;

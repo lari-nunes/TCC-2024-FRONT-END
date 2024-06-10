@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Alert, TextInput, Button, Platform } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Alert, TextInput, Platform, ScrollView } from 'react-native';
 import useAuthStore from '../../SaveId';
 import axios from 'axios';
 import { MaskedText } from "react-native-mask-text";
 import Url from '../../Url';
 import { useRoute } from "@react-navigation/native";
-import { MaskedTextInput } from "react-native-mask-text";
 import MyButton from '../MyButton';
 import DateTimePicker from '@react-native-community/datetimepicker'; 
 import { format } from 'date-fns';
 import ButtonAgendamentos from './ButtonAgendamentos';
-import { ScrollView } from 'react-native-gesture-handler';
 
-
-const AgendamentoLimpeza = ({navigation}) => {
-  const { idUser, setIdUser } = useAuthStore();
+const AgendamentoLimpeza = ({ navigation }) => {
+  const { idUser } = useAuthStore();
   const [limpador, setLimpador] = useState('');
   const route = useRoute();
-  const {idLimpador} = route.params;
+  const { idLimpador } = route.params;
   const [dateTime, setDateTime] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
-  
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
     setShowPicker(Platform.OS === 'ios');
@@ -43,7 +40,7 @@ const AgendamentoLimpeza = ({navigation}) => {
   };
 
   const [agenda, setAgenda] = useState({
-    dtAgendamento: '',
+    dataAgendamento: '',
     observacao: '',
     id_pessoa: '',
     idLimpador: ''
@@ -51,14 +48,13 @@ const AgendamentoLimpeza = ({navigation}) => {
 
   useEffect(() => {
     fetchLimpador();
-  },[]) ;
+  }, []);
 
-  
-  const fetchLimpador = async() => {
+  const fetchLimpador = async () => {
     try {
-      const {data} = await axios.get(`${Url}/pessoa/${idLimpador}`);
+      const { data } = await axios.get(`${Url}/pessoa/${idLimpador}`);
       setLimpador(data);
-    }catch (error) {
+    } catch (error) {
       Alert.alert('Erro', error.response.data.message);
     }
   };
@@ -70,65 +66,64 @@ const AgendamentoLimpeza = ({navigation}) => {
         id_pessoa: idUser,
         observacao: agenda.observacao,
         dataAgendamento: dateTime,
-        idLimpador: idLimpador
+        id_limpador: idLimpador
       };
-      console.log(agendaData);
-      const responseAgenda= await axios.post(`${Url}/agenda`, agendaData);
+      const responseAgenda = await axios.post(`${Url}/agenda`, agendaData);
       if (responseAgenda.status === 201) {
         Alert.alert('Sucesso! Seu cadastro foi realizado com sucesso!');
-        handleRegister(); 
-      } 
- 
-    } catch (error) { 
+        handleRegister();
+      }
+      setLimpador(response);
+    } catch (error) {
       Alert.alert('Erro', error.response.data.message);
     }
   };
-  
+
   const handleRegister = () => {
-    navigation.navigate('TelaInicialCliente'); 
+    navigation.navigate('TelaInicialCliente');
   };
 
   return (
     <>
       <SafeAreaView style={styles.block}>
         <ScrollView>
-        <View style={styles.Teste}>
-          <View style={styles.characterContainer}>
-            <View>
-                <Text style={styles.textDetalhes}>
-                  Detalhes do Piscineiro
-                </Text>
-                <Text style={styles.text}>
-                  {limpador.nm_pessoa}
-                </Text>
-                <MaskedText 
-                  style={styles.text}
-                  mask="(99) 99999-9999"
-                  keyboardType='numeric'
-                >
-                  {limpador.telefone1}
-                </MaskedText>
-                <Text style={styles.text}>{limpador.descricao} </Text>
-            </View>
-          </View>
-        
-          <View  style={styles.container}> 
-            <Text style={styles.textCad}>Cadastrar Agendamento de Limpeza</Text>
-            
+          <View style={styles.Teste}>
+            <View style={styles.container}> 
+              <Text style={styles.textCad}>Cadastrar Agendamento de Limpeza</Text>
 
-            <ButtonAgendamentos onPress={showDatepicker} title="Selecionar Data" />
-            <ButtonAgendamentos onPress={showTimepicker} title="Selecionar Hora" />
-            {showPicker && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={dateTime}
-                mode={mode}
-                display="default"
-                onChange={handleDateChange}
-                style={styles.dateTime}
-             
-              />
-            )}
+              <View style={styles.characterContainer}>
+                <View>
+                  <Text style={styles.textDetalhes}>
+                    Detalhes do Piscineiro
+                  </Text>
+                  <Text style={styles.text}>
+                    {limpador.nm_pessoa}
+                  </Text>
+                  <MaskedText 
+                    style={styles.text}
+                    mask="(99) 99999-9999"
+                    keyboardType='numeric'
+                  >
+                    {limpador.telefone1}
+                  </MaskedText>
+                  <Text style={styles.text}>{limpador.descricao}</Text>
+                </View>
+              </View>
+
+              <ButtonAgendamentos onPress={showDatepicker} title="Selecionar Data" />
+              <ButtonAgendamentos onPress={showTimepicker} title="Selecionar Hora" />
+
+              <View style={styles.inputAgend}> 
+              {showPicker && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={dateTime}
+                  mode={mode}
+                  display="default"
+                  onChange={handleDateChange}
+                  style={styles.dateTime}
+                />
+              )}
               <TextInput
                 style={styles.inputDataTime}
                 placeholder="Data de Agendamento"
@@ -137,17 +132,18 @@ const AgendamentoLimpeza = ({navigation}) => {
                 editable={false}
               />
               <TextInput
-              style={styles.inputObs}
-              placeholder="Observação"
-              placeholderTextColor="#afb9c9"
-              onChangeText={(text) => setAgenda({ ...agenda, observacao: text })}
-              multiline={true}
-            />
-            <MyButton title="Cadastrar" onPress={agendamento} />
-          </View>
-          
-        </View>  
-      </ScrollView>
+                style={styles.inputObs}
+                placeholder="Observação"
+                placeholderTextColor="#afb9c9"
+                onChangeText={(text) => setAgenda({ ...agenda, observacao: text })}
+                multiline={true}
+              />
+              <MyButton title="Cadastrar" onPress={agendamento} />
+              </View>
+              
+            </View>
+          </View>  
+        </ScrollView>
       </SafeAreaView>
     </>
   );
@@ -159,16 +155,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0f223d',
-    padding: 20,
-    marginTop: 50
+    paddingTop: 10,
+    marginTop: 70
   },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    
   },
-  inputDataTime:{
+  inputDataTime: {
     height: 40,
     width: 355,
     textAlign: "center",
@@ -179,10 +174,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#fff',
     flexDirection: "row",
+    marginBottom: 10,
   },
-  dateTime:{
+  dateTime: {
     width: 100,
     margin: 50,
+    paddingBottom: 20,
+  },
+  inputAgend: {
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
   title: {
     fontSize: 20,
@@ -195,9 +197,7 @@ const styles = StyleSheet.create({
   textDetalhes: {
     fontSize: 16,
     fontWeight: 'bold',
-    alignItems: 'center',
-    justifyContent: "center",
-    color: 'white',
+    color: '#000',
     marginBottom: 15,
     textAlign: 'center',
   },
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  text:{
-    color: 'white',
+  text: {
+    color: '#000',
   },
   textCad: {
     fontSize: 18,
@@ -223,14 +223,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
-  characterContainer:{
+  characterContainer: {
     padding: 20,
-    backgroundColor: "#2f3e75",
+    backgroundColor: "#24b8d1",
     margin: 20,
     borderRadius: 10,
     width: 350,
-    height:150,
-    marginBottom: 20,
+    height: 150,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -238,8 +237,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f223d',
     alignItems: 'center',
-    marginTop: 35
-   
+    marginTop: 35,
   },
   input: {
     width: 350,
@@ -247,9 +245,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#3876d9',
     borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    color: '#fff'
+    color: '#fff',
+    marginBottom: 10
   },
   inputObs: {
     width: 350,
@@ -260,7 +257,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     color: '#fff',
-  
   }
 });
 
