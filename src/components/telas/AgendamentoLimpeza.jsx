@@ -9,6 +9,7 @@ import MyButton from '../MyButton';
 import DateTimePicker from '@react-native-community/datetimepicker'; 
 import { format } from 'date-fns';
 import ButtonAgendamentos from './ButtonAgendamentos';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const AgendamentoLimpeza = ({ navigation }) => {
   const { idUser } = useAuthStore();
@@ -96,17 +97,27 @@ const AgendamentoLimpeza = ({ navigation }) => {
                   <Text style={styles.textDetalhes}>
                     Detalhes do Piscineiro
                   </Text>
-                  <Text style={styles.text}>
-                    {limpador.nm_pessoa}
-                  </Text>
-                  <MaskedText 
-                    style={styles.text}
-                    mask="(99) 99999-9999"
-                    keyboardType='numeric'
-                  >
-                    {limpador.telefone1}
-                  </MaskedText>
-                  <Text style={styles.text}>{limpador.descricao}</Text>
+
+                    <View flexDirection="row">
+                      <Ionicons name="person-outline" size={18} color="black" mode="contained" />
+                      
+                        <Text style={styles.text} marginLeft={5}>
+                          {limpador.nm_pessoa}
+                        </Text>
+                    </View>
+                  
+                    <View flexDirection="row">
+                      <Ionicons name="logo-whatsapp" size={18} color="black" mode="contained" />
+                      <MaskedText 
+                        style={styles.text}
+                        marginLeft={5}
+                        marginBottom={4}
+                        mask="(99) 99999-9999"
+                        keyboardType='numeric'
+                        >
+                        {limpador.telefone1}
+                      </MaskedText>
+                    </View>    
                 </View>
               </View>
 
@@ -156,7 +167,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0f223d',
     paddingTop: 10,
-    marginTop: 70
+    marginTop: 100
   },
   content: {
     alignItems: 'center',
@@ -164,8 +175,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputDataTime: {
-    height: 40,
-    width: 355,
+    height: 45,
+    width: 295,
     textAlign: "center",
     borderWidth: 1,
     borderColor: '#3876d9',
@@ -228,8 +239,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#24b8d1",
     margin: 20,
     borderRadius: 10,
-    width: 350,
-    height: 150,
+    width: 320,
+    height: 120,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -249,8 +260,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   inputObs: {
-    width: 350,
-    minHeight: 40,
+    width: 295,
+    minHeight: 45,
     borderWidth: 1,
     borderColor: '#3876d9',
     borderRadius: 5,

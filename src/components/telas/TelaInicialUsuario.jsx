@@ -58,7 +58,7 @@ const TelaInicialUsuario = () => {
 
   const fetchAgenda = async () => {
     try {
-      const { data } = await axios.get(`${Url}/agenda/listarAgendamentosLimpador/${idUser}`);
+      const { data } = await axios.get(`${Url}/agenda/limpadoresView/${idUser}`);
       setAgendamentos(data);
     } catch (error) {
       Alert.alert(error.message);
@@ -106,16 +106,19 @@ const TelaInicialUsuario = () => {
     );
   };
 
-  const handleRegister = async ()=> {
+  const handleRegister = async () => {
+    if (!servico.descricao || servico.vlr_estimado <= 0) {
+      Alert.alert('Erro', 'Preencha todos os campos para cadastrar o serviço.');
+      return;
+    }
+
     try {
-      console.log(servico)
       const { data } = await axios.post(`${Url}/servico`, servico);
-      Alert.alert('Sucesso','Serviço cadastrado com sucesso');
+      Alert.alert('Sucesso', 'Serviço cadastrado com sucesso');
     } catch (error) {
       Alert.alert('Erro', error.message);
     }
-
-  }
+  };
 
   const handleName = async () => {
     try {
@@ -129,10 +132,21 @@ const TelaInicialUsuario = () => {
 
   const CharacterItem = ({ data }) => {
     const formattedDate = format(parseISO(data.dataAgendamento), 'dd/MM/yyyy HH:mm');
+    const [mockPessoa, setMockPessoa] = useState({
+      nm_pessoa: data.nm_pessoa,
+      endereco: {
+        rua: data.rua,
+        bairro: data.bairro,
+        cidade: data.nm_municipio,
+        numero: data.numero,
+      }
+    });
+
     return (
       <TouchableOpacity>
         <View style={styles.characterContainer}>
           <View>
+            
             <TextInput
               style={styles.text}
               placeholder="Data de Agendamento"
@@ -141,8 +155,26 @@ const TelaInicialUsuario = () => {
               editable={false}
             />
             <Text style={styles.text}>
-              {data.observacao}
+            <Ionicons name="person-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
+              Nome: {mockPessoa.nm_pessoa}
             </Text>
+            <Text style={styles.text}>
+            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
+              Endereço: {mockPessoa.endereco.rua}
+            </Text>
+            <Text style={styles.text}>
+            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
+              Bairro: {mockPessoa.endereco.bairro}
+            </Text>
+            <Text style={styles.text} >
+            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} marginLeft={10} mode="contained" />
+              Rua: {mockPessoa.endereco.cidade}
+            </Text>
+            <Text style={styles.text}>
+            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
+              Número: {mockPessoa.endereco.numero}
+            </Text>
+            
           </View>
         </View>
       </TouchableOpacity>
@@ -151,22 +183,26 @@ const TelaInicialUsuario = () => {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.containerApp}>
-          <View style={styles.leftContainer}>
-            <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
-            <TextInput
-              numberOfLines={1}
-              editable={false}
-              value={new Date().toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-              })}
-              style={styles.dateInput}
-            />
+      <SafeAreaView style={styles.block}>
+        <View style={styles.container}>
+          <View style={styles.containerApp}>
+            <View>
+              <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
+              <TextInput
+                numberOfLines={1}
+                editable={false}
+                value={new Date().toLocaleDateString('pt-BR', {
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+                style={styles.dateInput}
+              />
+            </View>
+            <View >
+              <Ionicons name="exit-outline" size={32} marginLeft={50} color="white" onPress={handleLogout} mode="contained" />
+            </View>
           </View>
-          <Ionicons name="exit-outline" size={32} color="white" onPress={handleLogout} mode="contained" />
         </View>
 
         <View style={styles.content}>
@@ -208,18 +244,18 @@ const TelaInicialUsuario = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#0f223d',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    //alignItems: 'center',
+    //justifyContent: 'center',
+    padding: 5
   },
   containerApp: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 15, 
-    margin: 10,
+    
+    margin: 5,
   },
   leftContainer: {
     flexDirection: "column",
@@ -236,12 +272,17 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 20,
     borderRadius: 8,
-    height: 320,
+    height: 215,
     alignItems: 'center',
     justifyContent: 'center',
   },
   showButton: {
     color: '#000',
+  },
+  block: {
+    flex: 1,
+    backgroundColor: '#0f223d',
+    alignItems: 'center',
   },
   modalButton: {
     backgroundColor: '#E6CC81',
@@ -275,15 +316,15 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 16,
     marginLeft: 10,
-    fontWeight: "bold",
+    
   },
   characterContainer: {
     padding: 24,
-    backgroundColor: "#34b4eb",
+    backgroundColor: "#24b8d1",
     margin: 16,
     borderRadius: 15,
-    width: 320,
-    height: 150,
+    width: 340,
+    height: 180,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -297,9 +338,10 @@ const styles = StyleSheet.create({
     borderBottomColor: 'white',
     borderBottomWidth: 1,
     width: '100%',
-    textAlign: 'center',
-    fontSize: 20,
+    
+    fontSize: 18,
     color: 'white',
+
   },
 });
 

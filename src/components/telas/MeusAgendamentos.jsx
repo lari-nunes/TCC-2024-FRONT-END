@@ -8,7 +8,7 @@ import { format, parseISO } from 'date-fns';
 import { TextInput } from 'react-native-gesture-handler';
 
 const MeusAgendamentos = () => {
-  const [agendamentos, setAgendamentos] = useState([]); // Inicializar como array
+  const [agendamentos, setAgendamentos] = useState([]); 
   const { idUser } = useAuthStore();
 
   useEffect(() => {
@@ -20,12 +20,6 @@ const MeusAgendamentos = () => {
       const { data } = await axios.get(`${Url}/agenda/listarAgendamentos/${idUser}`);
       setAgendamentos(data);
       console.log(data);
-      if(!data.pessoa){
-        console.log(data.id_limpador)
-        const response = await axios.get(`${Url}/pessoa/${data.id_limpador}`);
-        //data.pessoa.nm_pessoa = response.data.nm_pessoa;
-      }
-      
     } catch (error) {
       Alert.alert('Erro', error.message);
       console.log(error);
@@ -46,16 +40,16 @@ const MeusAgendamentos = () => {
               editable={false}
             />
             <Text style={styles.text}>
-              {data?.descricao}
+              {data.descricao}
             </Text>
             <Text style={styles.text}>
-              {data?.pessoa?.nm_pessoa}
+              {data.pessoa ? data.pessoa.nm_pessoa : 'Nome não disponível'}
             </Text>
             <Text style={styles.text}>
-              {data?.telefone1}
+              {data.telefone1}
             </Text>
             <Text style={styles.text}>
-              {data?.observacao}
+              {data.observacao}
             </Text>
           </View>
         </View>
@@ -83,11 +77,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f223d',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  content: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
   },
   textAgend: {
     color: "#fff",

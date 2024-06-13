@@ -88,8 +88,20 @@ const TelaInicialCliente = () => {
       <TouchableOpacity onPress={() => navigation.navigate('AgendamentoLimpeza', { idLimpador: data.id_pessoa })}>
         <View style={styles.characterContainer}>
           <View style={styles.textInfo}>
-            <Text style={styles.textLabel}>Piscineiro(a):</Text>
-            <Text style={styles.textLabel}>WhatsApp:</Text>
+
+            <View style={styles.textIcon}  flexDirection="row">
+            <Ionicons name="person-outline" size={18} color="black" onPress={handleLogout} mode="contained" />
+            <Text style={styles.textLabel} marginLeft={5}>
+              Piscineiro(a):</Text>
+            </View>
+           
+            <View style={styles.textIcon}  flexDirection="row">
+              <Ionicons name="logo-whatsapp" size={18} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.textLabel}marginLeft={5}>
+                WhatsApp:</Text>
+            </View>    
+
+
           </View>
           <View style={styles.textDetails}>
             <Text style={styles.text}>{data.nm_pessoa}</Text>
@@ -170,7 +182,6 @@ const TelaInicialCliente = () => {
     <PaperProvider>
       <SafeAreaView style={styles.block}>
         <View style={styles.container}>
-
           <View style={styles.containerApp}>
             <View>
             <Text style={styles.titleContent}>{currentTime}, {nmPessoa}!</Text>
@@ -250,7 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f223d',
     //alignItems: 'center',
     //justifyContent: 'center',
-    padding: 20,
+    padding: 5,
   },
   containerApp: {
     flexDirection: "row",
@@ -271,7 +282,7 @@ const styles = StyleSheet.create({
   characterContainer: {
     padding: 18,
     backgroundColor: "#36D6EE",
-    margin: 10,
+    margin: 8,
     borderRadius: 8,
     width: 320,
     flexDirection: "row",
@@ -316,6 +327,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
+    
   },
   textDetails: {
     flex: 1.2,
@@ -391,6 +403,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 4
   }
 });
 
