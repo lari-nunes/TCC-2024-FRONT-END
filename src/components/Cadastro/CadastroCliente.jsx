@@ -34,6 +34,11 @@ const CadastroCliente = () => {
       Alert.alert('Erro', 'Todos os campos precisam ser preenchidos.');
       return;
     }
+    
+    if (senha.length > 6) {
+      Alert.alert('Erro', 'A senha deve ter no máximo 6 caracteres.');
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -55,7 +60,7 @@ const CadastroCliente = () => {
       }
     } catch (error) {
       Alert.alert('Erro', error.response.data.message);
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -101,7 +106,14 @@ const CadastroCliente = () => {
               placeholder="Senha"
               secureTextEntry={!showPassword}
               placeholderTextColor="#afb9c9"
-              onChangeText={(text) => setFormData({ ...formData, senha: text })}
+              onChangeText={(text) => {
+                if (text.length <= 6) {
+                  setFormData({ ...formData, senha: text });
+                } else {
+                  Alert.alert('Erro', 'A senha deve ter no máximo 6 caracteres.');
+                }
+              }}
+              value={formData.senha}
             />
             <TouchableOpacity
               style={styles.togglePassword}
@@ -182,7 +194,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10, 
     alignSelf: 'center', 
-
   },
   input: {
     width: 350,

@@ -25,12 +25,14 @@ const Login = () => {
   const handleLogin = async () => {
     setIsLoading(true);
     try {
+      
       const response = await axios.post(`${Url}/login`, { login: usuario, senha });
 
       if (response.status === 200) {
         setIdUser(response.data.id);
       }
     } catch (error) {
+      console.log(error)
       if (error.response.status === 404) {
         Alert.alert('Erro', 'Login ou senha incorretos!');
       } else {
@@ -72,7 +74,7 @@ const Login = () => {
           <TextInput
             style={styles.input}
             placeholder="Digite seu usuário"
-            onChangeText={(text) => setUsuario(text)}
+            onChangeText={(text) => setUsuario(text.trim())}
             value={usuario}
           />
           <View style={styles.passwordContainer}>

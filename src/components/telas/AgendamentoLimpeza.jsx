@@ -99,7 +99,7 @@ const AgendamentoLimpeza = ({ navigation }) => {
                   </Text>
 
                     <View flexDirection="row">
-                      <Ionicons name="person-outline" size={18} color="black" mode="contained" />
+                      <Ionicons name="person" size={20} color="black" mode="contained" />
                       
                         <Text style={styles.text} marginLeft={5}>
                           {limpador.nm_pessoa}
@@ -107,7 +107,7 @@ const AgendamentoLimpeza = ({ navigation }) => {
                     </View>
                   
                     <View flexDirection="row">
-                      <Ionicons name="logo-whatsapp" size={18} color="black" mode="contained" />
+                      <Ionicons name="logo-whatsapp" size={20} color="black" mode="contained" />
                       <MaskedText 
                         style={styles.text}
                         marginLeft={5}
@@ -224,9 +224,10 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#000',
+    fontSize: 14
   },
   textCad: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     alignItems: 'center',
     justifyContent: 'center',

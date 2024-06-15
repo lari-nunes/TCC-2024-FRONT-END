@@ -9,6 +9,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { format, parseISO } from 'date-fns';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Linking } from 'react-native';
+
 
 const TelaInicialUsuario = () => {
   const { idUser, setIdUser } = useAuthStore();
@@ -34,18 +36,18 @@ const TelaInicialUsuario = () => {
     setDateTime(currentDate);
   };
 
-  useEffect(() => {
-    const backAction = () => {
-      return true;
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     return true;
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction
+  //   );
 
-    return () => backHandler.remove();
-  }, []);
+  //  // return () => backHandler.remove();
+  // }, []);
 
   const showMode = (currentMode) => {
     setShowPicker(true);
@@ -130,10 +132,12 @@ const TelaInicialUsuario = () => {
     }
   };
 
+
   const CharacterItem = ({ data }) => {
-    const formattedDate = format(parseISO(data.dataAgendamento), 'dd/MM/yyyy HH:mm');
+    const formattedDate = format(parseISO(data.dataAgendamento), 'dd/MM/yyyy - HH:mm');
     const [mockPessoa, setMockPessoa] = useState({
       nm_pessoa: data.nm_pessoa,
+      telefone1: data.telefone1,
       endereco: {
         rua: data.rua,
         bairro: data.bairro,
@@ -141,43 +145,69 @@ const TelaInicialUsuario = () => {
         numero: data.numero,
       }
     });
+    const enviaMensagem = async ()=>{
+      const message = 'Tenho interesse em seus serviços';
+      try{
+        const url = await axios.post(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${message}`);
+      }catch(e){
+      }
+      
+  
+    }
 
     return (
-      <TouchableOpacity>
+      <View>
         <View style={styles.characterContainer}>
           <View>
-            
-            <TextInput
-              style={styles.text}
-              placeholder="Data de Agendamento"
-              placeholderTextColor="#afb9c9"
-              value={formattedDate}
-              editable={false}
-            />
-            <Text style={styles.text}>
-            <Ionicons name="person-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
-              Nome: {mockPessoa.nm_pessoa}
-            </Text>
-            <Text style={styles.text}>
-            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
-              Endereço: {mockPessoa.endereco.rua}
-            </Text>
-            <Text style={styles.text}>
-            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
-              Bairro: {mockPessoa.endereco.bairro}
-            </Text>
-            <Text style={styles.text} >
-            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} marginLeft={10} mode="contained" />
-              Rua: {mockPessoa.endereco.cidade}
-            </Text>
-            <Text style={styles.text}>
-            <Ionicons name="home-outline" size={16} color="black" onPress={handleLogout} mode="contained" />
-              Número: {mockPessoa.endereco.numero}
-            </Text>
-            
+            <View  flexDirection="row">
+              <Ionicons name="calendar" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <TextInput
+                style={styles.text}
+                placeholder="Data de Agendamento"
+                placeholderTextColor="#afb9c9"
+                value={formattedDate}
+                editable={false}
+                marginLeft={5}
+              />
+            </View> 
+            <View  flexDirection="row">
+              <Ionicons name="person" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                Nome: {mockPessoa.nm_pessoa}
+              </Text>
+            </View> 
+            <View  flexDirection="row">
+              <Ionicons name="logo-whatsapp" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                WhatsApp: {mockPessoa.telefone1}
+              </Text>
+            </View>
+            <View  flexDirection="row">
+              <Ionicons name="home" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                Cidade: {mockPessoa.endereco.cidade}
+              </Text>
+            </View> 
+            <View  flexDirection="row">
+              <Ionicons name="home" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                Bairro: {mockPessoa.endereco.bairro}
+              </Text>
+            </View> 
+            <View  flexDirection="row">
+              <Ionicons name="home" size={22} color="black" onPress={handleLogout} mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                Rua: {mockPessoa.endereco.rua}
+              </Text>
+            </View>  
+            <TouchableOpacity style={styles.modalButtonn} onPress={() => Linking.openURL(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${'Tenho interesse em seus serviços'}`)}>
+              <Text style={styles.showButton}>Enviar Mensagem</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
-      </TouchableOpacity>
+        
+      </View>
     );
   };
 
@@ -219,12 +249,15 @@ const TelaInicialUsuario = () => {
                 placeholder="Nome do serviço"
                 placeholderTextColor="#afb9c9"
                 onChangeText={(text) => setServico({ ...servico, descricao: text })}
+                maxLength={50}  // Limite de caracteres para o nome do serviço
               />
               <TextInput
                 style={styles.modalText}
                 placeholder="Valor do Serviço"
                 placeholderTextColor="#afb9c9"
                 onChangeText={(number) => setServico({ ...servico, vlr_estimado: number })}
+                keyboardType="numeric" 
+                maxLength={10}  
               />
               <MyButton title="Cadastrar serviço" onPress={handleRegister} />
             </Modal>
@@ -233,8 +266,8 @@ const TelaInicialUsuario = () => {
           <Text style={styles.textAgend}>Meus Agendamentos</Text>
           <FlatList
             data={agendamentos}
-            renderItem={({ item }) => <CharacterItem data={item} />}
-            keyExtractor={(item) => item.id_agenda.toString()}
+            renderItem={({ item, index }) => <CharacterItem key={index} data={item} />}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </SafeAreaView>
@@ -262,10 +295,27 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     margin: 10, 
   },
+  modalButtonn: {
+    backgroundColor: '#0fa336',
+    width: 200,
+    height: 45,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 4
+  },
+  showButton: {
+    textAlign: 'center',
+    color: '#000',
+  },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+  },
+  ButtonCaracter: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalContainer: {
     backgroundColor: 'white',
@@ -315,22 +365,22 @@ const styles = StyleSheet.create({
   text: {
     color: "#000",
     fontSize: 16,
-    marginLeft: 10,
+    marginLeft: 5,
     
   },
   characterContainer: {
     padding: 24,
-    backgroundColor: "#24b8d1",
+    backgroundColor: "#34b4eb",
     margin: 16,
     borderRadius: 15,
     width: 340,
-    height: 180,
+    height: 240,
     flexDirection: "row",
     alignItems: "center",
   },
   titleContent: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: -10,
   },
   dateInput: {

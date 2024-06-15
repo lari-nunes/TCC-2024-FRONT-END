@@ -28,18 +28,18 @@ const TelaInicialCliente = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  useEffect(() => {
-    const backAction = () => {
-      return true;
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     return true;
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction
+  //   );
 
-    return () => backHandler.remove();
-  }, []);
+  //   return () => backHandler.remove();
+  // }, []);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
@@ -90,7 +90,7 @@ const TelaInicialCliente = () => {
           <View style={styles.textInfo}>
 
             <View style={styles.textIcon}  flexDirection="row">
-            <Ionicons name="person-outline" size={18} color="black" onPress={handleLogout} mode="contained" />
+            <Ionicons name="person" size={18} color="black" onPress={handleLogout} mode="contained" />
             <Text style={styles.textLabel} marginLeft={5}>
               Piscineiro(a):</Text>
             </View>

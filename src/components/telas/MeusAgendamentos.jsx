@@ -6,6 +6,7 @@ import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { format, parseISO } from 'date-fns';
 import { TextInput } from 'react-native-gesture-handler';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const MeusAgendamentos = () => {
   const [agendamentos, setAgendamentos] = useState([]); 
@@ -17,7 +18,8 @@ const MeusAgendamentos = () => {
 
   const handleName = async () => {
     try {
-      const { data } = await axios.get(`${Url}/agenda/listarAgendamentos/${idUser}`);
+      console.log(idUser)
+      const { data } = await axios.get(`${Url}/agenda/agendaCliente/${idUser}`);
       setAgendamentos(data);
       console.log(data);
     } catch (error) {
@@ -32,25 +34,37 @@ const MeusAgendamentos = () => {
       <TouchableOpacity>
         <View style={styles.characterContainer}>
           <View>
-            <TextInput
-              style={styles.text}
-              placeholder="Data de Agendamento"
-              placeholderTextColor="#afb9c9"
-              value={formattedDate}
-              editable={false}
-            />
-            <Text style={styles.text}>
-              {data.descricao}
-            </Text>
-            <Text style={styles.text}>
-              {data.pessoa ? data.pessoa.nm_pessoa : 'Nome não disponível'}
-            </Text>
-            <Text style={styles.text}>
-              {data.telefone1}
-            </Text>
-            <Text style={styles.text}>
-              {data.observacao}
-            </Text>
+          <View  flexDirection="row">
+              <Ionicons name="calendar" size={22} color="black"  mode="contained" />
+              <TextInput
+                style={styles.text}
+                placeholder="Data de Agendamento"
+                placeholderTextColor="#afb9c9"
+                value={formattedDate}
+                editable={false}
+                marginLeft={5}
+              />
+            </View> 
+            <View  flexDirection="row">
+              <Ionicons name="person" size={22} color="black"  mode="contained" />
+              <Text style={styles.text}  marginLeft={5}>
+                  Nome: {data.nm_pessoa}
+              </Text> 
+            </View>
+            
+            <View  flexDirection="row">
+              <Ionicons name="logo-whatsapp" size={22} color="black" mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                WhatsApp: {data.telefone1}
+              </Text>
+            </View>
+            
+            <View  flexDirection="row">
+              <Ionicons name="home" size={22} color="black"  mode="contained" />
+              <Text style={styles.text}  marginLeft={5}>
+                Cidade: {data.nm_municipio}
+              </Text> 
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -80,24 +94,24 @@ const styles = StyleSheet.create({
   },
   textAgend: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 22,
+    margin: 20,
     fontWeight: "bold"
   },
   text: {
     color: "#000",
     fontSize: 16,
     marginLeft: 10,
-    fontWeight: "bold",
   },
   characterContainer: {
     padding: 24,
     backgroundColor: "#34b4eb",
-    margin: 16,
+    margin: 10,
     borderRadius: 15,
     width: 320,
-    height: 150,
+    height: 140,
     flexDirection: "row",
-    alignItems: "center",
+    
   },
   title: {
     fontSize: 20,
