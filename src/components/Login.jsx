@@ -23,6 +23,7 @@ const Login = () => {
   }, [idUser]);
 
   const handleLogin = async () => {
+    setIdUser(null);
     setIsLoading(true);
     try {
       

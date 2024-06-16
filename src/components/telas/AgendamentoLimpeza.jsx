@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Alert, TextInput, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Alert, TextInput, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import useAuthStore from '../../SaveId';
 import axios from 'axios';
 import { MaskedText } from "react-native-mask-text";
@@ -19,6 +19,7 @@ const AgendamentoLimpeza = ({ navigation }) => {
   const [dateTime, setDateTime] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [showPicker, setShowPicker] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
@@ -52,15 +53,19 @@ const AgendamentoLimpeza = ({ navigation }) => {
   }, []);
 
   const fetchLimpador = async () => {
+    setIsLoading(true);
     try {
       const { data } = await axios.get(`${Url}/pessoa/${idLimpador}`);
       setLimpador(data);
     } catch (error) {
       Alert.alert('Erro', error.response.data.message);
+    }  finally {
+      setIsLoading(false);
     }
   };
 
   const agendamento = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${Url}/pessoa/${idUser}`);
       const agendaData = {
@@ -77,6 +82,8 @@ const AgendamentoLimpeza = ({ navigation }) => {
       setLimpador(response);
     } catch (error) {
       Alert.alert('Erro', error.response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -149,7 +156,9 @@ const AgendamentoLimpeza = ({ navigation }) => {
                 onChangeText={(text) => setAgenda({ ...agenda, observacao: text })}
                 multiline={true}
               />
-              <MyButton title="Cadastrar" onPress={agendamento} />
+              <TouchableOpacity style={styles.buttonAg} onPress={agendamento} disabled={isLoading}>
+                <Text style={styles.buttonTextAg}>{isLoading ? 'Cadastrando...' : 'Cadastrar'}</Text>
+              </TouchableOpacity>
               </View>
               
             </View>
@@ -225,6 +234,21 @@ const styles = StyleSheet.create({
   text: {
     color: '#000',
     fontSize: 14
+  },
+  buttonAg: {
+    backgroundColor: '#24b8d1',
+    width: 220, 
+    borderRadius: 8,
+    paddingVertical: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10, 
+    alignSelf: 'center', 
+  },
+  buttonTextAg: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   textCad: {
     fontSize: 22,

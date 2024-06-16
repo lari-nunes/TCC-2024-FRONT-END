@@ -200,7 +200,7 @@ const TelaInicialUsuario = () => {
                 Rua: {mockPessoa.endereco.rua}
               </Text>
             </View>  
-            <TouchableOpacity style={styles.modalButtonn} onPress={() => Linking.openURL(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${'Tenho interesse em seus serviços'}`)}>
+            <TouchableOpacity style={styles.modalButtonn} onPress={() => Linking.openURL(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${'Olá! Vi que você agendou uma limpeza de piscina comigo. Estarei me programando para isso. Responda essa mensagem para maiores informações!'}`)}>
               <Text style={styles.showButton}>Enviar Mensagem</Text>
             </TouchableOpacity>
 
@@ -296,13 +296,14 @@ const styles = StyleSheet.create({
     margin: 10, 
   },
   modalButtonn: {
-    backgroundColor: '#0fa336',
+    backgroundColor: '#14ad03',
     width: 200,
     height: 45,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 4
+    margin: 4,
+    borderColor: "#000"
   },
   showButton: {
     textAlign: 'center',
@@ -328,6 +329,7 @@ const styles = StyleSheet.create({
   },
   showButton: {
     color: '#000',
+    fontWeight:"bold"
   },
   block: {
     flex: 1,

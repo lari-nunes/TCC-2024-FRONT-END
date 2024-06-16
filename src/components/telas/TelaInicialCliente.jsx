@@ -28,19 +28,6 @@ const TelaInicialCliente = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     return true;
-  //   };
-
-  //   const backHandler = BackHandler.addEventListener(
-  //     'hardwareBackPress',
-  //     backAction
-  //   );
-
-  //   return () => backHandler.remove();
-  // }, []);
-
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dateTime;
     setShowPicker(Platform.OS === 'ios');
@@ -57,6 +44,7 @@ const TelaInicialCliente = () => {
   };
 
   const fetchLimpadores = async () => {
+    setLimpadores([]);
     try {
       const { data } = await axios.get(`${Url}/pessoa/limpadores`);
       setLimpadores(data);
@@ -156,27 +144,38 @@ const TelaInicialCliente = () => {
 
   const handleFilter = async () => {
     try {
-      const formattedDate = format(dateTime, 'yyyy-MM-dd');      
-      const {data} = await axios.get(`${Url}/pessoa/listaFiltro/${formattedDate}?nm_municipio=${cidade}`);
-    
-      if(data.length > 0){
+      const formattedDate = format(dateTime, 'yyyy-MM-dd');  
+      let response;
+      if(cidade){
+        response = await axios.get(`${Url}/pessoa/listaFiltro/${formattedDate}?nm_municipio=${cidade}`);
+      }else{
+        response = await axios.get(`${Url}/pessoa/listaFiltro/${formattedDate}`);
+      }
+      setCidade('');
+      const {data} = response;
+      if (data.length > 0) {
         setLimpadores(data);
         hideModal();
       } else {
         Alert.alert('Erro', "Não foram encontrados limpadores com o filtro informado");
         hideModal();
+        setLimpadores([]);
+        fetchLimpadores();
       }
     } catch (error) {
-    
-      if(error.response.status === 404){
+      if (error.response && error.response.status === 404) {
+        setLimpadores([]);
         Alert.alert('Erro', "Não foi encontrado limpadores com o filtro informado");
         hideModal();
         return;
       }
+      setLimpadores([]);
+      fetchLimpadores();
       Alert.alert('Erro', error.message);
       console.log(error);
     }
   };
+
 
   return (
     <PaperProvider>
@@ -203,7 +202,7 @@ const TelaInicialCliente = () => {
           </View>
     
           <View style={styles.buttonAgend}>
-            <ButtonAgendamentos title="Meus Agendamentos" onPress={handleAgendamentos} />
+            <ButtonAgendamentos title="Meus agendamentos" onPress={handleAgendamentos} />
             <Button onPress={showModal} style={styles.modalButton}>
               <Text style={styles.showButton}> Filtrar piscineiros(as) por:</Text>
             </Button>
@@ -354,7 +353,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 8,
     textAlign: 'center',
     fontSize: 16,
     color: '#000',
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
   },
   titleContent: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: -10,
   },
   block: {

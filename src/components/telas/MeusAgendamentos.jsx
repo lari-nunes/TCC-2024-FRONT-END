@@ -4,7 +4,7 @@ import axios from 'axios';
 import useAuthStore from '../../SaveId';
 import Url from '../../Url';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, subHours} from 'date-fns';
 import { TextInput } from 'react-native-gesture-handler';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -29,13 +29,16 @@ const MeusAgendamentos = () => {
   };
 
   const CharacterItem = ({ data }) => {
-    const formattedDate = format(parseISO(data.dataAgendamento), 'dd/MM/yyyy HH:mm');
+    
+    const adjustedDate = subHours(parseISO(data.dataAgendamento), 3);
+    const formattedDate = format(adjustedDate, 'dd/MM/yyyy HH:mm');
+  
     return (
       <TouchableOpacity>
         <View style={styles.characterContainer}>
           <View>
-          <View  flexDirection="row">
-              <Ionicons name="calendar" size={22} color="black"  mode="contained" />
+            <View flexDirection="row">
+              <Ionicons name="calendar" size={22} color="black" mode="contained" />
               <TextInput
                 style={styles.text}
                 placeholder="Data de Agendamento"
@@ -44,26 +47,24 @@ const MeusAgendamentos = () => {
                 editable={false}
                 marginLeft={5}
               />
-            </View> 
-            <View  flexDirection="row">
-              <Ionicons name="person" size={22} color="black"  mode="contained" />
-              <Text style={styles.text}  marginLeft={5}>
-                  Nome: {data.nm_pessoa}
-              </Text> 
             </View>
-            
-            <View  flexDirection="row">
+            <View flexDirection="row">
+              <Ionicons name="person" size={22} color="black" mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
+                Nome: {data.nm_pessoa}
+              </Text>
+            </View>
+            <View flexDirection="row">
               <Ionicons name="logo-whatsapp" size={22} color="black" mode="contained" />
               <Text style={styles.text} marginLeft={5}>
                 WhatsApp: {data.telefone1}
               </Text>
             </View>
-            
-            <View  flexDirection="row">
-              <Ionicons name="home" size={22} color="black"  mode="contained" />
-              <Text style={styles.text}  marginLeft={5}>
+            <View flexDirection="row">
+              <Ionicons name="home" size={22} color="black" mode="contained" />
+              <Text style={styles.text} marginLeft={5}>
                 Cidade: {data.nm_municipio}
-              </Text> 
+              </Text>
             </View>
           </View>
         </View>
