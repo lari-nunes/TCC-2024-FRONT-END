@@ -101,13 +101,11 @@ const AgendamentoLimpeza = ({ navigation }) => {
 
               <View style={styles.characterContainer}>
                 <View>
-                  <Text style={styles.textDetalhes}>
-                    Detalhes do Piscineiro
-                  </Text>
-
+                    <Text style={styles.textDetalhes}>
+                      Detalhes do Piscineiro
+                    </Text>
                     <View flexDirection="row">
                       <Ionicons name="person" size={20} color="black" mode="contained" />
-                      
                         <Text style={styles.text} marginLeft={5}>
                           {limpador.nm_pessoa}
                         </Text>
@@ -124,7 +122,17 @@ const AgendamentoLimpeza = ({ navigation }) => {
                         >
                         {limpador.telefone1}
                       </MaskedText>
-                    </View>    
+                    </View> 
+                    <View>
+                      {limpador.descricao ? (
+                        <View flexDirection="row">
+                          <Ionicons name="chatbubble-ellipses" size={20} color="black" mode="contained" />
+                          <Text style={styles.text} marginLeft={5}>
+                            {limpador.descricao}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </View> 
                 </View>
               </View>
 
@@ -206,6 +214,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 10,
   },
+  textDetalhesPisc: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -265,7 +278,7 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     width: 320,
-    height: 120,
+    height: 140,
     flexDirection: "row",
     alignItems: "center",
   },
