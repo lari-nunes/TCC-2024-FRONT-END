@@ -155,6 +155,8 @@ const TelaInicialUsuario = () => {
   
     }
 
+    const mensagemWhatsApp = `Olá ${mockPessoa.nm_pessoa}! Vi que você agendou uma limpeza de piscina para ${formattedDate}. Estarei me programando para isso. Responda essa mensagem para maiores informações!`;
+
     return (
       <View>
         <View style={styles.characterContainer}>
@@ -200,7 +202,7 @@ const TelaInicialUsuario = () => {
                 Rua: {mockPessoa.endereco.rua}
               </Text>
             </View>  
-            <TouchableOpacity style={styles.modalButtonn} onPress={() => Linking.openURL(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${'Olá! Vi que você agendou uma limpeza de piscina comigo. Estarei me programando para isso. Responda essa mensagem para maiores informações!'}`)}>
+            <TouchableOpacity style={styles.modalButtonn} onPress={() => Linking.openURL(`whatsapp://send?phone=${mockPessoa.telefone1}&text=${encodeURIComponent(mensagemWhatsApp)}`)}>
               <Text style={styles.showButton}>Enviar Mensagem</Text>
             </TouchableOpacity>
 
@@ -376,7 +378,7 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 15,
     width: 340,
-    height: 240,
+    height: 255,
     flexDirection: "row",
     alignItems: "center",
   },
