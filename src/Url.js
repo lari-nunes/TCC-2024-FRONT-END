@@ -1,2 +1,2 @@
-const Url = 'http://192.168.0.20:8080';
+const Url = 'http://192.168.47.126:8080';
 export default Url;

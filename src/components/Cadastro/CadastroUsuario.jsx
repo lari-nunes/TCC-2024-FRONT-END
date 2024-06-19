@@ -108,7 +108,7 @@ const CadastroUsuario = () => {
                 onChangeText={(text) => setFormData({ ...formData, senha: text })}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#afb9c9" />
+                <Feather name={showPassword ? "eye" : "eye-off"} size={20} color="#afb9c9" />
               </TouchableOpacity>
             </View>
             <TextInput

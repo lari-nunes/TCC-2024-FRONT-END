@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native';
+import { TextInput, StyleSheet, Alert, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native';
 import LogoImage from './img/logotcc.png';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios'; 
@@ -69,37 +69,39 @@ const Login = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.hp}>
-        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-          <Image source={LogoImage} style={styles.image} />
-          <Text style={styles.title}>Seja bem-vindo ao AppSwim</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu usuário"
-            onChangeText={(text) => setUsuario(text.trim())}
-            value={usuario}
-          />
-          <View style={styles.passwordContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+          <View style={styles.innerContainer}>
+            <Image source={LogoImage} style={styles.image} />
+            <Text style={styles.title}>Seja bem-vindo ao AppSwim</Text>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Digite sua senha"
-              secureTextEntry={!showPassword}
-              onChangeText={(text) => setSenha(text)}
-              value={senha}
+              style={styles.input}
+              placeholder="Digite seu usuário"
+              onChangeText={(text) => setUsuario(text.trim())}
+              value={usuario}
             />
-            <TouchableOpacity
-              style={styles.togglePassword}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Feather name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Digite sua senha"
+                secureTextEntry={!showPassword}
+                onChangeText={(text) => setSenha(text)}
+                value={senha}
+              />
+              <TouchableOpacity
+                style={styles.togglePassword}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Feather name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.button} onPress={handleAccess} disabled={isLoading}>
+              <Text style={styles.buttontext}>{isLoading ? 'Acessando conta...' : 'Login'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleNavRegister}>
+              <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.button} onPress={handleAccess} disabled={isLoading}>
-            <Text style={styles.buttontext}>{isLoading ? 'Acessando conta...' : 'Login'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleNavRegister}>
-            <Text style={styles.textCad}>Não possui login? Cadastra-se agora</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -107,22 +109,29 @@ const Login = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#0f223d',
+    
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    marginBottom: 55
+  },
+  innerContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    backgroundColor: '#0f223d'
+    paddingVertical: 20,
   },
   textCad: {
-    justifyContent: 'center',
     marginTop: 20,
     fontSize: 18,
-    color: '#008cff'
+    color: '#008cff',
   },
   title: {
     color: '#fff',
     fontSize: 22,
     marginBottom: 25,
-    marginTop: -15,
     fontWeight: 'bold',
   },
   passwordContainer: {
@@ -150,7 +159,6 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     backgroundColor: '#fff',
     paddingHorizontal: 8,
-  
   },
   passwordInput: {
     flex: 1,
@@ -161,7 +169,6 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     marginBottom: 30,
-    marginTop: -80,
   },
   hp: {
     width: '100%',
